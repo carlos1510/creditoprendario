@@ -18,7 +18,7 @@ function Sidebar({hide}){
                             </Link>
                         </li>
                         <li>
-                            <Link to="/service" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                            <Link to="/servicio" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                 <i className="fas fa-file-alt mr-2"></i> Servicio
                             </Link>
                         </li>
@@ -32,24 +32,24 @@ function Sidebar({hide}){
                             </div>
                             <ul className={showOpe ? "desplegable ml-4": "desplegable ml-4 hidden"}>
                                 <li>
-                                    <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                    <Link to="/credito" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Creditos 
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                    <Link to="/cobros" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Cobros 
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                    <Link to="/gasto" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Gastos 
                                     </Link>
                                 </li>
                             </ul>   
                         </li>
                         <li>
-                            <Link to="/service" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                            <Link to="/caja" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                             <i class="fas fa-money-check-alt mr-2"></i> Caja
                             </Link>
                         </li>
@@ -84,12 +84,12 @@ function Sidebar({hide}){
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                    <Link to="/pagoAlquiler" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Pago Alquiler 
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                    <Link to="/empresa" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Datos Empresa 
                                     </Link>
                                 </li>
