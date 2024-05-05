@@ -1,0 +1,10 @@
+.is-current {
+    background-color: #0085b9;
+    color: white;
+}
+
+.is-disabled {
+    background-color: #999;
+    color: #686666;
+    cursor: not-allowed;
+}

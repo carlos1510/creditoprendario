@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet,
+  redirect,
+  useActionData,
+  useLoaderData,
+ } from 'react-router-dom';
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
 import './App.css';
-import Header from './components/Header/Header';
-import Sidebar from './components/Sidebar/Sidebar';
+import Header from '../../components/Header/Header'
+import Sidebar from '../../components/Sidebar/Sidebar';
+
+
 
 function App() {
   const [eventResult, setEventResult] = React.useState(null);

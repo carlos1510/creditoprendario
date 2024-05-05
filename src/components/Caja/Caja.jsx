@@ -61,7 +61,7 @@ function Caja(){
             (
                 <div className="bg-white p-4 rounded-md mt-4">
                     <div className="grid grid-cols-2">
-                        <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista</h2>
+                        <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista de Caja</h2>
                         <div className="text-right">
                             <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded" onClick={()=> setRegister(!register)}>
                                 <i className="fas fa-plus-circle"></i> Agregar

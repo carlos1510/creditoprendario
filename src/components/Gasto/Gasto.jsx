@@ -80,7 +80,7 @@ function Gasto(){
                 
                     <div className="bg-white p-4 rounded-md mt-4">
                         <div className="grid grid-cols-2">
-                            <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista</h2>
+                            <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista de Gastos</h2>
                         </div>
                         <div className="my-1"></div> 
                         <div className="bg-gradient-to-r from-cyan-300 to-cyan-500 h-px mb-6"></div> 

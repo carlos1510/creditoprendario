@@ -25,7 +25,7 @@ function Sidebar({hide}){
                         <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowOpe(!showOpe)}>
                                 <div className="flex items-center">
-                                <i class="fab fa-shopify mr-2"></i>
+                                <i className="fab fa-shopify mr-2"></i>
                                 <span>Operaciones</span>
                                 </div>
                                 <i className={showOpe ? "fas fa-chevron-up text-xs": "fas fa-chevron-down text-xs"}></i>
@@ -50,14 +50,14 @@ function Sidebar({hide}){
                         </li>
                         <li>
                             <Link to="/caja" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                            <i class="fas fa-money-check-alt mr-2"></i> Caja
+                                <i className="fas fa-money-check-alt mr-2"></i> Caja
                             </Link>
                         </li>
                         <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowReporte(!showReporte)}>
                                 <div className="flex items-center">
-                                <i class="fas fa-chart-bar mr-2"></i>
-                                <span>Reportes</span>
+                                    <i className="fas fa-chart-bar mr-2"></i>
+                                    <span>Reportes</span>
                                 </div>
                                 <i className={showReporte ? "fas fa-chevron-up text-xs": "fas fa-chevron-down text-xs"}></i>
                             </div>
