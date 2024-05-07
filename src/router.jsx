@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./routes/App";
 import Login from "./routes/Login/Login";
 import Home from "./components/Home/Home";
-import Caja from "./components/Caja/Caja";
 import Cobro from "./components/Cobro/Cobro";
 import Gasto from "./components/Gasto/Gasto";
 import PagoAlquiler from "./routes/PagoAlquiler/PagoAlquiler";
@@ -11,6 +10,7 @@ import Servicio from "./components/Servicio/Servicio";
 import Usuario from "./routes/Usuario/Usuario";
 import Empresa from "./routes/Empresa/Empresa";
 import Empresas from "./routes/Empresas";
+import Cajas from "./routes/Cajas/Cajas";
 
 export const router = createBrowserRouter([
     {
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "caja",
-                element: <Caja />
+                element: <Cajas />
             },
             {
                 path: "cobros",

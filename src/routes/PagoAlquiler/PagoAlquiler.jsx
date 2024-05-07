@@ -43,11 +43,7 @@ function PagoAlquiler(){
     });
     
     const lastIndex = currentPage * perPage;
-    const firstIndex = lastIndex - perPage;
-    const [value, setValue] = React.useState({ 
-        startDate: null ,
-        endDate: null 
-    }); 
+    const firstIndex = lastIndex - perPage; 
 
     React.useEffect(() => {
         fechaActual();
@@ -219,6 +215,11 @@ function PagoAlquiler(){
                     <div className="my-1"></div> 
                     <div className="bg-gradient-to-r from-cyan-300 to-cyan-500 h-px mb-6"></div> 
                     <form className="max-w-lg mx-auto" onSubmit={handleSubmit}>
+                        {
+                            estadoRegistro && (
+                                <input type="hidden" name="id" value={formData.id} />
+                            )
+                        }
                         <div className="grid md:grid-cols-2 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
                                 <label htmlFor="tipo_banco_idCmb" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Banco <span className='text-red-600'>*</span></label>
@@ -309,15 +310,15 @@ function PagoAlquiler(){
                             </div>
 
                             <div className="mb-4">
-                                    <label >HASTA: <span className='text-red-600'>*</span></label>
-                                    <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
-                                        useRange={false} 
-                                        asSingle={true} 
-                                        value={fechafin} 
-                                        onChange={handleFechaFinChange} 
-                                        displayFormat={"DD/MM/YYYY"} 
-                                        readOnly
-                                    />
+                                <label >HASTA: <span className='text-red-600'>*</span></label>
+                                <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
+                                    useRange={false} 
+                                    asSingle={true} 
+                                    value={fechafin} 
+                                    onChange={handleFechaFinChange} 
+                                    displayFormat={"DD/MM/YYYY"} 
+                                    readOnly
+                                />
                             </div>
 
                             <div className="mb-4">
