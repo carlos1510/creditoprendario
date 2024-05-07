@@ -31,11 +31,6 @@ function Cajas(){
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
 
-    const [fechaPago, setFechaPago] = React.useState({
-        startDate: null,
-        endDate: null
-    });
-
     const [fechaIni, setFechaIni] = React.useState({
         startDate: null,
         endDate: null
@@ -340,7 +335,7 @@ function Cajas(){
                     </div>
                     <div className="grid grid-cols-2">
                         <div className="text-left mt-4">
-                        <span>Mostrando {currentPage === 1 ? 1 : (1+parseInt(perPage))} hasta {perPage * currentPage} de {totalPage} Filas</span>
+                            <span>Mostrando {currentPage === 1 ? 1 : (1+parseInt(perPage))} hasta {perPage * currentPage} de {totalPage} Filas</span>
                         </div>
                         <div className="text-right mt-4">
                             <span className="pr-2">Ver</span>
