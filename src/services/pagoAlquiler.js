@@ -1,9 +1,9 @@
 import { URL_BASE, tokenKey } from "../constants";
 
-export async function getServicios(){
+export async function getPagoAlquileres(fecha1, fecha2){
     //const token = authProvider.token;
 
-    const url = `${URL_BASE}/servicios`;
+    const url = `${URL_BASE}/pagoalquileres/${fecha1}/${fecha2}`;
     const options = {
         method: "GET",
         headers: {
@@ -18,38 +18,8 @@ export async function getServicios(){
     return body.data;
 }
 
-export async function getServicio(id){
-    const url = `${URL_BASE}/servicios/${id}`; 
-    
-    //const token = window.localStorage.getItem(tokenKey); 
-
-    const options = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    if (response.ok) {
-        const body = await response.json();
-        return body.data;
-    }
-
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }*/
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
-}
-
-export async function saveServicio(formData){
-    const url = `${URL_BASE}/servicios`;
-
+export async function createdPagoAlquiler(formData){
+    const url = `${URL_BASE}/pagoalquileres`;
     const options = {
         method: "POST",
         body: JSON.stringify(formData),
@@ -70,9 +40,8 @@ export async function saveServicio(formData){
     return Promise.reject(new Error(body.error));
 }
 
-export async function editServicio(id, updateData){
-    const url = `${URL_BASE}/servicios/${id}`; 
-    
+export async function editPagoAlquiler(id, updateData){
+    const url = `${URL_BASE}/pagoalquileres/${id}`;
     //const token = window.localStorage.getItem(tokenKey); 
 
     const options = {
@@ -100,8 +69,8 @@ export async function editServicio(id, updateData){
     return Promise.reject(new Error(body.error));
 }
 
-export async function deleteServicio(id){
-    const url = `${URL_BASE}/servicios/${id}`;
+export async function deletePagoAlquiler(id){
+    const url = `${URL_BASE}/pagoalquileres/${id}`;
     const token = window.localStorage.getItem(tokenKey);
 
     const options = {

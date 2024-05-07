@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Form, Link, useLoaderData, useActionData } from "react-router-dom";
-import Datepicker from "react-tailwindcss-datepicker"; 
-import { deleteServicio, editServicio, getServicio, getServicios, saveServicio } from "../../services/servicios";
+import { Link } from "react-router-dom";
+import { deleteServicio, editServicio, getServicios, saveServicio } from "../../services/servicios";
 import Swal from "sweetalert2";
 import Pagination from '../Pagination/Pagination';
 
@@ -320,7 +319,6 @@ function Servicio(){
                     currentPage={currentPage} 
                     setCurrentPage={setCurrentPage} 
                     totalPage={totalPage} />
-
                 </div>
             </div>
         )}

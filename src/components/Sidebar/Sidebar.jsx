@@ -89,6 +89,11 @@ function Sidebar({hide}){
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link to="/empresas" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Empresas
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link to="/empresa" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Datos Empresa 
                                     </Link>

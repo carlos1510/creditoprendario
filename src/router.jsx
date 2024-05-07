@@ -2,14 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./routes/App";
 import Login from "./routes/Login/Login";
 import Home from "./components/Home/Home";
-import Usuario from "./components/Usuario/Usuario";
 import Caja from "./components/Caja/Caja";
 import Cobro from "./components/Cobro/Cobro";
 import Gasto from "./components/Gasto/Gasto";
-import PagoAlquiler from "./components/PagoAlquiler/PagoAlquiler";
+import PagoAlquiler from "./routes/PagoAlquiler/PagoAlquiler";
 import Credito from "./components/Credito/Credito";
 import Servicio from "./components/Servicio/Servicio";
-import Empresa from "./components/Empresa/Empresa";
+import Usuario from "./routes/Usuario/Usuario";
+import Empresa from "./routes/Empresa/Empresa";
+import Empresas from "./routes/Empresas";
 
 export const router = createBrowserRouter([
     {
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
             {
                 path: "empresa",
                 element: <Empresa />
+            },
+            {
+                path: "empresas",
+                element: <Empresas />
             }
         ]
         
