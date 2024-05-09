@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import { createdPagoAlquiler, deletePagoAlquiler, editPagoAlquiler, getPagoAlquileres } from '../../services/pagoAlquiler';
 import Pagination from '../../components/Pagination/Pagination';
-import { formatoFecha } from '../../util';
+import { formatoFecha } from '../../utils/util'; 
 
 
 const initialValues = {

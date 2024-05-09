@@ -5,12 +5,12 @@ import Home from "./components/Home/Home";
 import Cobro from "./components/Cobro/Cobro";
 import Gasto from "./components/Gasto/Gasto";
 import PagoAlquiler from "./routes/PagoAlquiler/PagoAlquiler";
-import Credito from "./components/Credito/Credito";
 import Servicio from "./components/Servicio/Servicio";
 import Usuario from "./routes/Usuario/Usuario";
 import Empresa from "./routes/Empresa/Empresa";
 import Empresas from "./routes/Empresas";
 import Cajas from "./routes/Cajas/Cajas";
+import Creditos from "./routes/Creditos/Creditos";
 
 export const router = createBrowserRouter([
     {
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "credito",
-                element: <Credito />
+                element: <Creditos />
             },
             {
                 path: "empresa",

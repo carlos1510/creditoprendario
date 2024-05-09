@@ -3,7 +3,7 @@ import { Form, Link } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import './style.css';
 import Pagination from '../../components/Pagination/Pagination';
-import { formatoFecha } from '../../util';
+import { formatoFecha } from '../../utils/util';
 import Swal from "sweetalert2";
 import { createdCaja, deleteCaja, editCaja, getCajas } from '../../services/caja';
 
