@@ -18,6 +18,11 @@ function Sidebar({hide}){
                             </Link>
                         </li>
                         <li>
+                            <Link to="/cobro" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                            <i className="fas fa-money-bill-alt mr-2"></i> Cobrar
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/servicio" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                 <i className="fas fa-file-alt mr-2"></i> Servicio
                             </Link>
@@ -37,8 +42,8 @@ function Sidebar({hide}){
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/cobros" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Cobros 
+                                    <Link to="/pagos" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Pagos 
                                     </Link>
                                 </li>
                                 <li>

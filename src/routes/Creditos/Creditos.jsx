@@ -246,8 +246,6 @@ function Creditos(){
     async function obtenerNroComprobante(event){
         const [resultado] = await Promise.all([getNroComprobante(event.target.value)]);
 
-        console.log(resultado.codigogenerado);
-
         setFormData({...formData, seriecorrelativo: resultado.seriecorrelativo, numerocorrelativo: resultado.numerocorrelativo, codigogenerado: resultado.codigogenerado, tipo_comprobante_id: event.target.value});
     }
 
@@ -274,10 +272,31 @@ function Creditos(){
         if(datos){
             setFormData({
                 id: datos.id,
-                fechaapertura: formatoFecha(datos.fechaapertura),
-                horaapertura: datos.horaapertura,
-                montoinicial: datos.montoinicial,
-                user_id: datos.user_id
+                fecha: datos.fecha,
+                fechalimite: formatoFecha(datos.fechalimite),
+                seriecorrelativo: datos.seriecorrelativo,
+                numerocorrelativo: datos.numerocorrelativo,
+                codigogenerado: datos.codigogenerado,
+                tipomoneda: datos.tipomoneda,
+                descripcion_bien: datos.descripcion_bien,
+                monto: datos.monto,
+                interes: datos.interes,
+                subtotal: datos.subtotal,
+                total: datos.total,
+                total_texto: datos.total_texto,
+                descuento: datos.descuento,
+                montoactual: datos.montoactual,
+                tipo_comprobante_id: datos.tipo_comprobante_id,
+                servicio_id: datos.servicio_id,
+                tipodocumento: datos.tipodocumento,
+                numerodocumento: datos.numerodocumento,
+                nombrescliente: datos.nombrescliente,
+                direccion: datos.direccion?datos.direccion:'',
+                referencia: datos.referencia?datos.referencia:'',
+                telefono1: datos.telefono1?datos.telefono1:'',
+                telefono2: datos.telefono2?datos.telefono2:'',
+                email: datos.email?datos.email:'',
+                cliente_id: datos.cliente_id?datos.cliente_id:null 
             });
 
             setFechaHoy({startDate: datos.fecha, endDate: datos.fecha});
@@ -298,7 +317,7 @@ function Creditos(){
         Swal.fire({
             icon: "question",
             title: "Eliminar", 
-            text: "¿Desea Eliminar la Empresa?", 
+            text: "¿Desea Eliminar el Crédito?", 
             confirmButtonColor: "#387765",
             confirmButtonText: "Eliminar",
             showDenyButton: true,
@@ -637,6 +656,7 @@ function Creditos(){
                             <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
                                 useRange={false} 
                                 asSingle={true} 
+                                name='fechaIni'
                                 value={fechaIni} 
                                 onChange={handleFechaIniChange} 
                                 displayFormat={"DD/MM/YYYY"} 
@@ -649,6 +669,7 @@ function Creditos(){
                             <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
                                 useRange={false} 
                                 asSingle={true} 
+                                name='fechafin'
                                 value={fechafin} 
                                 onChange={handleFechaFinChange} 
                                 displayFormat={"DD/MM/YYYY"} 
@@ -694,26 +715,41 @@ function Creditos(){
                     <table className="w-full table-auto text-sm border-t border-grey-light">
                         <thead>
                             <tr className="text-sm leading-normal">
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE COMPROBANTE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. COMPROBANTE</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE SERVICIO</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">DESCRIPCION</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">PERIODO</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. PERIODO</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">PORCENTAJE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">Acción</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. DOC. CLIENTE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NOMBRES CLIENTE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA LIMITE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">MONTO</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">INTERES</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TOTAL</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">EDITAR</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">ELIMINAR</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 creditos?.map((credito) => (
                                     <tr className="hover:bg-grey-lighter" key={credito.id}>
-                                        <td className="py-2 px-4 border-b border-grey-light">Carlos Sánchez</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">Carlos Sánchez</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">27/07/2023</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">Carlos Sánchez</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">27/07/2023</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.nombre_comprobante}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.codigogenerado}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.tiposervicio}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.descripcion_bien}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{formatoFecha(credito.fecha)}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.numerodocumento}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.nombrescliente}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{formatoFecha(credito.fechalimite)}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {credito.monto}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {credito.interes}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/.{credito.total}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
-                                            <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded"><i className="fas fa-edit"></i></Link>
-                                            <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"><i className="fas fa-trash-alt"></i></Link>
+                                            <button type='button' className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, credito)}><i className="fas fa-edit"></i></button>
+                                        </td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-center">
+                                        <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
                                         </td>
                                     </tr>
                                 )).slice(firstIndex, lastIndex)

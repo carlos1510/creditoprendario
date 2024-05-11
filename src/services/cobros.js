@@ -1,11 +1,11 @@
 import { URL_BASE, tokenKey } from "../constants";
 
-export async function getCreditos(responsableId,fecha1, fecha2, nroDocumento){
+export async function getCobros(responsableId,fecha1, fecha2, nroDocumento){
     //const token = authProvider.token;
     
     responsableId = isNaN(parseInt(responsableId))? 0 : responsableId;
     nroDocumento = isNaN(parseInt(nroDocumento))?0:nroDocumento;
-    const url = `${URL_BASE}/creditos/${responsableId}/${fecha1}/${fecha2}/${nroDocumento}`;
+    const url = `${URL_BASE}/pagos/${responsableId}/${fecha1}/${fecha2}/${nroDocumento}`;
     const options = {
         method: "GET",
         headers: {
@@ -20,8 +20,8 @@ export async function getCreditos(responsableId,fecha1, fecha2, nroDocumento){
     return body.data;
 }
 
-export async function createdCredito(formData){
-    const url = `${URL_BASE}/creditos`;
+export async function createdCobro(formData){
+    const url = `${URL_BASE}/pagos`;
     const options = {
         method: "POST",
         body: JSON.stringify(formData),
@@ -42,8 +42,8 @@ export async function createdCredito(formData){
     return Promise.reject(new Error(body.error));
 }
 
-export async function editCredito(id, updateData){
-    const url = `${URL_BASE}/creditos/${id}`;
+export async function editCobro(id, updateData){
+    const url = `${URL_BASE}/pagos/${id}`;
     //const token = window.localStorage.getItem(tokenKey); 
 
     const options = {
@@ -71,8 +71,8 @@ export async function editCredito(id, updateData){
     return Promise.reject(new Error(body.error));
 }
 
-export async function deleteCredito(id){
-    const url = `${URL_BASE}/creditos/${id}`;
+export async function deleteCobro(id){
+    const url = `${URL_BASE}/pagos/${id}`;
     //const token = window.localStorage.getItem(tokenKey);
 
     const options = {
@@ -97,39 +97,4 @@ export async function deleteCredito(id){
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));
-}
-
-export async function getNroComprobante(id){
-    //const token = authProvider.token;
-
-    const url = `${URL_BASE}/creditos/comprobante/${id}`;
-    const options = {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    const body = await response.json();
-    return body.data;
-}
-
-export async function getCreditoByDocumento(fecha1, fecha2, nroDocumento){
-    const url = `${URL_BASE}/creditos/cliente/${nroDocumento}`;
-
-    const options = {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    const body = await response.json();
-    return body.data;
 }

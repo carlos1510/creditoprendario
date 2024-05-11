@@ -68,14 +68,14 @@ function Home(){
 
                     <article
                         className="bg-white  p-6 mb-6 shadow transition duration-300 group transform hover:-translate-y-2 hover:shadow-2xl rounded-2xl cursor-pointer border">
-                        <Link to="/cobros"
+                        <Link to="/cobro"
                             className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                         <div className="relative mb-4 rounded-2xl ">
                             <img className="max-h-80  rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
                                 src={pagoImg} alt="" />
                             
                             <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 z-10 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
-                                to="/cobros">
+                                to="/cobro">
                                 Ir a
                                 <svg className="ml-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -85,9 +85,9 @@ function Home(){
                         </div>
                         <div className="flex justify-between items-center w-full pb-4 mb-auto"></div>
                         <h3 className="font-medium text-xl leading-8">
-                            <Link to="/cobros"
+                            <Link to="/cobro"
                                 className="block relative group-hover:text-red-700 transition-colors duration-200 ">
-                                COBROS
+                                COBRAR
                             </Link>
                         </h3>
                     </article>
