@@ -24,6 +24,7 @@
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.10.6"
   },
+  "homepage": "http://161.132.38.201/credito",
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
