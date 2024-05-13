@@ -13,6 +13,8 @@ import Creditos from "./routes/Creditos/Creditos";
 import Cobros from "./routes/Cobros/Cobros";
 import Pagos from "./routes/Pagos/Pagos";
 
+const baseruta = '/creditoprendario';
+
 export const router = createBrowserRouter([
     {
         id: "app",
@@ -71,4 +73,5 @@ export const router = createBrowserRouter([
         path: "/login",
         element: <Login />
     }
-])
+], 
+{basename: baseruta})
