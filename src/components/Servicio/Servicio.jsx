@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { deleteServicio, editServicio, getServicios, saveServicio } from "../../services/servicios";
 import Swal from "sweetalert2";
 import Pagination from '../Pagination/Pagination';
+import { useTitle } from '../Title/Title';
 
 const initialValues = {
     id: 0,
@@ -15,6 +16,7 @@ const initialValues = {
 };
 
 function Servicio(){
+    useTitle('Pago Alquiler');
     const [servicios, setServicios] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
     const totalPage = servicios.length;

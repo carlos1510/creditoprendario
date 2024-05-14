@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Pagination from '../../components/Pagination/Pagination';
 import { createdEmpresa, deleteEmpresa, editEmpresa, getEmpresas } from '../../services/empresas';
+import { useTitle } from '../../components/Title/Title';
 
 const initialValues = {
     id: 0,
@@ -18,6 +19,7 @@ const initialValues = {
 };
 
 function Empresas(){
+    useTitle('Pago Alquiler');
     const [empresas, setEmpresas] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
     const totalPage = empresas.length;

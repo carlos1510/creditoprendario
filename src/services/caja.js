@@ -96,3 +96,43 @@ export async function deleteCaja(id){
     const body = await response.json();
     return Promise.reject(new Error(body.error));
 }
+
+export async function getCierraCaja(id){
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/cajas/${id}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
+}
+
+export async function cerrarCaja(formData){
+    const url = `${URL_BASE}/cajas/cierre`;
+    const options = {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if(response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    const body = await response.json();
+    return Promise.reject(new Error(body.error));
+}

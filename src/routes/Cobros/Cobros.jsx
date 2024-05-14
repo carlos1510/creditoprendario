@@ -6,6 +6,7 @@ import { getCreditoByDocumento } from '../../services/creditos';
 import { formatoFecha } from '../../utils/util';
 import { createdCobro } from '../../services/cobros';
 import Swal from 'sweetalert2';
+import { useTitle } from '../../components/Title/Title';
 
 const initialValues = {
     id: 0,
@@ -18,10 +19,13 @@ const initialValues = {
     user_id: 1,
     fecha: "",
     capital: "",
-    empresa_id: 1
+    empresa_id: 1,
+    credito_id: "1"
 };
 
 function Cobros(){
+
+    useTitle('Pago Alquiler');
     const [cobros, setCobros] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
     const totalPage = cobros.length;
@@ -144,7 +148,7 @@ function Cobros(){
         setFechaHoy({startDate: fechaActual, endDate: fechaActual});
         if(datos){
             setFormData({
-                id: datos.id,
+                id: 0,
                 fechalimite: formatoFecha(datos.fechalimite),
                 capital: datos.total_actual!==0?datos.total:datos.monto,
                 interes: datos.interes_actual!==0?datos.interes_actual:datos.interes,
@@ -154,7 +158,8 @@ function Cobros(){
                 monto: "",
                 fecha: fechaActual,
                 user_id: 1,
-                empresa_id: 1
+                empresa_id: 1,
+                credito_id: datos.id
             });
     
         }

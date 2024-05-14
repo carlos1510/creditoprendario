@@ -5,6 +5,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { createdPagoAlquiler, deletePagoAlquiler, editPagoAlquiler, getPagoAlquileres } from '../../services/pagoAlquiler';
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util'; 
+import { useTitle } from '../../components/Title/Title';
 
 
 const initialValues = {
@@ -18,6 +19,8 @@ const initialValues = {
 };
 
 function PagoAlquiler(){
+
+    useTitle('Pago Alquiler');
 
     const [pagoAlquileres, setPagoAlquileres] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);

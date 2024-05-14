@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { useTitle } from '../Title/Title';
 
 
 function Home(){
+    useTitle('Inicio');
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-center items-center px-2 mx-auto">

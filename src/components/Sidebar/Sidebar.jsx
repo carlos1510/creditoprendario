@@ -13,7 +13,7 @@ function Sidebar({hide}){
                 <nav>
                     <ul className="space-y-2">
                         <li>
-                            <Link to="/" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                            <Link to="/home" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                 <i className="fas fa-home mr-2 text-center"></i> Inicio
                             </Link>
                         </li>

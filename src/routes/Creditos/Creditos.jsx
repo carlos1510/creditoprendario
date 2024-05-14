@@ -8,6 +8,7 @@ import { createdCredito, deleteCredito, editCredito, getCreditos, getNroComproba
 import { numeroALetras } from '../../utils/numeroALetras';
 import { getClienteByNroDoc } from '../../services/clientes';
 import { getServicios } from '../../services/servicios';
+import { useTitle } from '../../components/Title/Title';
 
 const initialValues = {
     id: 0,
@@ -41,6 +42,7 @@ const initialValues = {
 };
 
 function Creditos(){
+    useTitle('Creditos');
     const [creditos, setCreditos] = React.useState([]);
     const [servicios, setServicios] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);

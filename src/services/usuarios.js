@@ -18,6 +18,24 @@ export async function getUsuarios(){
     return body.data;
 }
 
+export async function getUsuariosByEmpresa(){
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/usuarios/empresa`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
+}
+
 export async function createdUser(formData){
     const url = `${URL_BASE}/usuarios`;
     const options = {
@@ -67,4 +85,22 @@ export async function editUser(id, updateData){
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));
+}
+
+export async function getUsuarioByNroDoc(tipodocumento, numerodocumento){
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/usuarios/${tipodocumento}/${numerodocumento}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
 }

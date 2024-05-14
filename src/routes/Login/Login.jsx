@@ -1,8 +1,10 @@
 import * as React from "react";
 import { Form } from "react-router-dom";
 import './styles.css';
+import { useTitle } from "../../components/Title/Title";
 
 function Login(){
+    useTitle('Login');
     return (
         <>
             <div

@@ -3,7 +3,8 @@ import { Form, Link } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import Swal from "sweetalert2";
 import Pagination from '../../components/Pagination/Pagination';
-import { createdUser, editUser, getUsuarios } from '../../services/usuarios';
+import { createdUser, editUser, getUsuarioByNroDoc, getUsuarios } from '../../services/usuarios';
+import { useTitle } from '../../components/Title/Title';
 
 const initialValues = {
     id: 0,
@@ -20,6 +21,7 @@ const initialValues = {
 };
 
 function Usuario(){
+    useTitle('Usuarios');
     const [usuarios, setUsuarios] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
     const [isChecked, setIsChecked] = React.useState(false);
@@ -41,6 +43,20 @@ function Usuario(){
         const [resultados] = await Promise.all([getUsuarios()]);
         
         setUsuarios(resultados);
+    }
+
+    async function obtenerDatosUserByNumDoc() {
+        const [resultados] = await Promise.all([getUsuarioByNroDoc(formData.tipodocumentoid, formData.numerodocumento)]);
+        if(resultados.nombres === ''){
+            Swal.fire({
+                icon: "warning",
+                title: "Advertencia!", 
+                text: "Usuario no Encontrado, por favor ingrese manualmente el nombre", 
+                timer: 5000
+            });
+        }else{
+            setFormData({...formData, id: resultados.id?resultados.id:"", nombres: resultados.nombres, apellidos: resultados.apellidos});
+        }
     }
 
     async function confirmCreatedUser(){
@@ -192,7 +208,10 @@ function Usuario(){
                                 />
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                                <button type="button" className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto md:mt-7 px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <button type="button" 
+                                    className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto md:mt-7 px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={obtenerDatosUserByNumDoc}
+                                >
                                     <i className='fas fa-search'></i> Buscar
                                 </button>
                             </div>
