@@ -136,3 +136,24 @@ export async function cerrarCaja(formData){
     const body = await response.json();
     return Promise.reject(new Error(body.error));
 }
+
+export async function obtenerAperturaCaja(){
+    const url = `${URL_BASE}/cajas/obtenerapertura`;
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if(response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    const body = await response.json();
+    return Promise.reject(new Error(body.error));
+}

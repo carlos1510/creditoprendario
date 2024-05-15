@@ -9,6 +9,7 @@ import { numeroALetras } from '../../utils/numeroALetras';
 import { getClienteByNroDoc } from '../../services/clientes';
 import { getServicios } from '../../services/servicios';
 import { useTitle } from '../../components/Title/Title';
+import { obtenerAperturaCaja } from '../../services/caja';
 
 const initialValues = {
     id: 0,
@@ -53,6 +54,7 @@ function Creditos(){
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
     const [responsableId, setResponsableId] = React.useState("");
     const [nroDocumentoFiltro, setNroDocumentoFiltro] = React.useState("");
+    const [estadoApertura, setEstadoApertura] = React.useState(-1);
 
     const [fechaHoy, setFechaHoy] = React.useState({
         startDate: null,
@@ -73,6 +75,7 @@ function Creditos(){
     const firstIndex = lastIndex - perPage;
 
     React.useEffect(() => {
+        verificarAperturaExistente();
         fechaActual();
         setFormData(initialValues);
         
@@ -245,6 +248,12 @@ function Creditos(){
         
     }
 
+    async function verificarAperturaExistente(){
+        const [resultados] = await Promise.all([obtenerAperturaCaja()]);
+        
+        setEstadoApertura(resultados.apertura_activo);
+    }
+
     async function obtenerNroComprobante(event){
         const [resultado] = await Promise.all([getNroComprobante(event.target.value)]);
 
@@ -351,6 +360,19 @@ function Creditos(){
 
     return (
         <>
+            {
+                estadoApertura !== 0?(
+                    <div class=' space-y-6'>
+                        <div class="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
+                            <p class="font-bold">Información de Apertura de Caja</p>
+                            <p class="text-sm">
+                                Debe Aperturar Caja para poder Realizar el Registro de Creditos
+                            </p>
+                        </div>
+                    </div>
+                ):""           
+            }
+            
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
                     <h2 className="text-gray-500 text-center text-lg font-semibold pb-4">{estadoRegistro?'EDITAR': 'NUEVO'} CREDITO</h2>
@@ -628,11 +650,16 @@ function Creditos(){
                 </div>
             ) : (
                 <div className='grid grid-cols-1'>
-                    <div className="text-right ">
-                        <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, null)}>
-                            <i className="fas fa-plus-circle"></i> Agregar
-                        </button>
-                    </div>
+                    {
+                        estadoApertura===0?(
+                            <div className="text-right ">
+                                <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, null)}>
+                                    <i className="fas fa-plus-circle"></i> Agregar
+                                </button>
+                            </div>
+                        ):("")
+                    }
+                    
                     <div className="bg-white p-4 rounded-md mt-4">
                     <div className="grid grid-cols-1">
                         <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista de Creditos</h2>
@@ -748,10 +775,20 @@ function Creditos(){
                                         <td className="py-2 px-4 border-b border-grey-light text-right">S/. {credito.interes}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-right">S/.{credito.total}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
-                                            <button type='button' className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, credito)}><i className="fas fa-edit"></i></button>
+                                            {
+                                                estadoApertura===0?(
+                                                    <button type='button' className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, credito)}><i className="fas fa-edit"></i></button>
+                                                ):""
+                                            }
+                                            
                                         </td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
-                                        <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
+                                            {
+                                                estadoApertura===0?(
+                                                    <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
+                                                ):""
+                                            }
+
                                         </td>
                                     </tr>
                                 )).slice(firstIndex, lastIndex)

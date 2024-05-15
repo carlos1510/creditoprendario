@@ -41,7 +41,7 @@ function Sidebar({hide}){
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Creditos 
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link to="/pagos" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Pagos 
                                     </Link>
@@ -50,7 +50,7 @@ function Sidebar({hide}){
                                     <Link to="/gasto" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Gastos 
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>   
                         </li>
                         <li>
@@ -58,7 +58,7 @@ function Sidebar({hide}){
                                 <i className="fas fa-money-check-alt mr-2"></i> Caja
                             </Link>
                         </li>
-                        <li className="opcion-con-desplegable">
+                        {/* <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowReporte(!showReporte)}>
                                 <div className="flex items-center">
                                     <i className="fas fa-chart-bar mr-2"></i>
@@ -73,7 +73,7 @@ function Sidebar({hide}){
                                     </Link>
                                 </li>
                             </ul>   
-                        </li>
+                        </li> */}
                         <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowConfig(!showConfig)}>
                                 <div className="flex items-center">
@@ -98,11 +98,11 @@ function Sidebar({hide}){
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Empresas
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link to="/empresa" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Datos Empresa 
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>   
                         </li>
                     </ul>                   

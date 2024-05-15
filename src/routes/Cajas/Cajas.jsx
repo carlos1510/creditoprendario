@@ -5,7 +5,7 @@ import './style.css';
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util';
 import Swal from "sweetalert2";
-import { cerrarCaja, createdCaja, deleteCaja, editCaja, getCajas, getCierraCaja } from '../../services/caja';
+import { cerrarCaja, createdCaja, deleteCaja, editCaja, getCajas, getCierraCaja, obtenerAperturaCaja } from '../../services/caja';
 import { useTitle } from '../../components/Title/Title';
 import { getUsuariosByEmpresa } from '../../services/usuarios';
 
@@ -35,6 +35,7 @@ function Cajas(){
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
     const [estadoCierre, setEstadoCierre] = React.useState(false);
+    const [estadoApertura, setEstadoApertura] = React.useState(-1);
 
     const [fechaIni, setFechaIni] = React.useState({
         startDate: null,
@@ -50,6 +51,7 @@ function Cajas(){
     const firstIndex = lastIndex - perPage;
 
     React.useEffect(() => {
+        verificarAperturaExistente();
         fechaActual();
         setFormData(initialValues);
         getResponsables();
@@ -58,9 +60,6 @@ function Cajas(){
 
     const fechaActual = () => {
         let date = new Date();
-        
-        //let fechaActual = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-        //let horaActual = date.getHours() + ":" + date.getMinutes() + "/" + date.getSeconds();
 
         let primerDia = new Date(date.getFullYear(), date.getMonth() , 1);
         let ultimoDia = new Date(date.getFullYear(), (date.getMonth() + 1), 0);
@@ -70,8 +69,6 @@ function Cajas(){
 
         setFechaIni({startDate: dateIni, endDate: dateIni});
         setFechafin({startDate: dateFin, endDate: dateFin});
-
-        
     }
 
     async function getLista(){
@@ -109,10 +106,16 @@ function Cajas(){
             montocobro: resultados.montocobro, montocredito:resultados.montocredito, montocierre:resultados.montocierre});
     }
 
+    async function verificarAperturaExistente(){
+        const [resultados] = await Promise.all([obtenerAperturaCaja()]);
+        setEstadoApertura(resultados.apertura_activo);
+    }
+
     async function confirmCreatedCaja(){
         try{
             const response = await createdCaja(formData);
             
+            verificarAperturaExistente();
             setRegister(!register);
             setFormData(initialValues);
             setEstadoRegistro(false);
@@ -164,6 +167,7 @@ function Cajas(){
             const response = await deleteCaja(id);
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
+            verificarAperturaExistente();
             getLista();
         }catch(error){
             Swal.fire({
@@ -183,6 +187,7 @@ function Cajas(){
             setFormData(initialValues);
             setEstadoRegistro(false);
             setEstadoCierre(false);
+            verificarAperturaExistente();
             Swal.fire({
                 icon: "success", 
                 title: "Exito!", 
@@ -283,6 +288,7 @@ function Cajas(){
 
     return (
         <>
+            
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
                     <h2 className="text-gray-500 text-center text-lg font-semibold pb-4">{estadoCierre?'CIERRE':'APERTURA'} DE CAJA</h2>
@@ -487,11 +493,15 @@ function Cajas(){
                 <div className="bg-white p-4 rounded-md mt-4">
                     <div className="grid grid-cols-2">
                         <h2 className="text-gray-500 text-lg font-semibold pb-4">Lista de Caja</h2>
-                        <div className="text-right">
-                            <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, false, null)}>
-                                <i className="fas fa-plus-circle"></i> Agregar
-                            </button>
-                        </div>
+                        {
+                            estadoApertura===-1?(
+                                <div className="text-right">
+                                    <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, false, null)}>
+                                        <i className="fas fa-plus-circle"></i> Agregar
+                                    </button>
+                                </div>
+                            ):("")
+                        }
                     </div>
                     <div className="my-1"></div> 
                     <div className="bg-gradient-to-r from-cyan-300 to-cyan-500 h-px mb-6"></div> 

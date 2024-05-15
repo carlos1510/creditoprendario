@@ -17,8 +17,7 @@ function Login(){
                     <div className="self-start hidden lg:flex flex-col  text-gray-300">
                         
                         <h1 className="my-3 font-semibold text-4xl">Bienvenido</h1>
-                        <p className="pr-3 text-sm opacity-75">Aplicativo web para el registro de historial de pacientes con tratamientos 
-                        en pigmentación u otros.</p>
+                        <p className="pr-3 text-sm opacity-75">Aplicativo web para registro de Credito Prendario</p>
                     </div>
                 </div>
 

@@ -7,6 +7,7 @@ import { formatoFecha } from '../../utils/util';
 import { createdCobro } from '../../services/cobros';
 import Swal from 'sweetalert2';
 import { useTitle } from '../../components/Title/Title';
+import { obtenerAperturaCaja } from '../../services/caja';
 
 const initialValues = {
     id: 0,
@@ -34,6 +35,7 @@ function Cobros(){
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
     const [nroDocumentoFiltro, setNroDocumentoFiltro] = React.useState("");
+    const [estadoApertura, setEstadoApertura] = React.useState(-1);
 
     const [fechaHoy, setFechaHoy] = React.useState({
         startDate: null,
@@ -55,6 +57,7 @@ function Cobros(){
 
     React.useEffect(() => {
         //fechaActual();
+        verificarAperturaExistente();
         setFormData(initialValues);
         
         //getLista();
@@ -78,6 +81,11 @@ function Cobros(){
         const [resultados] = await Promise.all([getCreditoByDocumento(fechaIni.startDate, fechafin.startDate, nroDocumentoFiltro)]);
         
         setCobros(resultados);
+    }
+
+    async function verificarAperturaExistente(){
+        const [resultados] = await Promise.all([obtenerAperturaCaja()]);
+        setEstadoApertura(resultados.apertura_activo);
     }
 
     async function confirmCreatedCobro(){
@@ -201,6 +209,18 @@ function Cobros(){
 
     return (
         <>
+            {
+                estadoApertura !== 0?(
+                    <div class=' space-y-6'>
+                        <div class="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
+                            <p class="font-bold">Información de Apertura de Caja</p>
+                            <p class="text-sm">
+                                Debe Aperturar Caja para poder Realizar el Registro de Creditos
+                            </p>
+                        </div>
+                    </div>
+                ):""           
+            }
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
                     <h2 className="text-gray-500 text-center text-lg font-semibold pb-4">Registrar PAGO</h2>
@@ -406,7 +426,12 @@ function Cobros(){
                                             <td className="py-2 px-4 border-b border-grey-light">{cobro.descripcion_bien}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-right">S/.{cobro.total_actual!==0?cobro.total_actual:cobro.total}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
-                                                <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(cobro)}><i className="fas fa-money-bill-alt"></i></Link>
+                                                {
+                                                    estadoApertura === 0 ? (
+                                                        <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(cobro)}><i className="fas fa-money-bill-alt"></i></Link>
+                                                    ) : ""
+                                                }
+                                                
                                             </td>
                                         </tr>
                                     )).slice(firstIndex, lastIndex)
