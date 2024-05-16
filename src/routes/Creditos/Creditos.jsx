@@ -10,6 +10,7 @@ import { getClienteByNroDoc } from '../../services/clientes';
 import { getServicios } from '../../services/servicios';
 import { useTitle } from '../../components/Title/Title';
 import { obtenerAperturaCaja } from '../../services/caja';
+import ticket from '../../utils/ticket';
 
 const initialValues = {
     id: 0,
@@ -122,9 +123,187 @@ function Creditos(){
         }
     }
 
+    //INICIO PARA TICKET
+    const [base64, setBase64] = React.useState('');
+    const [message, setMessage] = React.useState('');
+
+    const onGenerateTicket = async (output, data) => {
+        setBase64('');
+        setMessage('');
+
+        const content = [
+            { text: '' + data.nombre_empresa, style: 'header', margin: [0, 10, 0, 0] },
+            { text: '' + data.direccion_empresa, style: 'header' },
+            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'header' },
+
+            //TIPO Y NUMERO DOCUMENTO
+            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 10, 0, 2.25] },
+            { text: '' + data.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
+
+            //DATOS CEBECERA FACTURAR
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['25%', '35%', '15%', '25%'],
+                    body: [
+                        [
+                        { text: 'FECHA:', style: 'tHeaderLabel' },
+                        { text: '' + formatoFecha(data.fecha), style: 'tHeaderValue' },
+                        { text: 'HORA:', style: 'tHeaderLabel' },
+                        { text: '' + data.hora, style: 'tHeaderValue' },
+                        ],
+                        [
+                        { text: 'CLIENTE:', style: 'tHeaderLabel' },
+                        { text: '' + data.nombrescliente, style: 'tHeaderValue', colSpan: 3 },
+                        {},
+                        {},
+                        ],
+                        [
+                        { text: 'DNI:', style: 'tHeaderLabel' },
+                        { text: '' + data.nrodoc_cliente, style: 'tHeaderValue', colSpan: 3 },
+                        {},
+                        {},
+                        ],
+                        [
+                        { text: 'CAJERO:', style: 'tHeaderLabel' },
+                        { text: '' + data.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
+                        {},
+                        {},
+                        ],
+                        [
+                            { text: 'FECHA LIMITE:', style: 'tTotals', alignment: 'left', colSpan: 2, margin: [15, 6, 0, 0] },
+                            {},
+                            { text: '' + formatoFecha(data.fechalimite), style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 6, 0, 0] },
+                            {},
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            //TABLA SERVICIO
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['35%', '25%', '15%', '25%'],
+                    body: [
+                            [
+                                {
+                                    text: 'SERVICIO: ',
+                                    style: 'tTotals',
+                                    alignment: 'left',
+                                    colSpan: 4,
+                                    margin: [10, 6, 0, 0],
+                                },
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [10, 0, 0, 0] },
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                {
+                                    text: 'DESCRIPCION: ',
+                                    style: 'tTotals',
+                                    alignment: 'left',
+                                    colSpan: 4,
+                                    margin: [10, 6, 0, 0],
+                                },
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                {
+                                    text: '' + data.descripcion_bien,
+                                    style: 'tProductsBody',
+                                    colSpan: 4,
+                                    margin: [10, 0, 0, 0],
+                                },
+                                {},
+                                {},
+                                {},
+                            ],
+                        ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                  widths: ['25%', '35%', '15%', '25%'],
+                  body: [
+                    //TOTALES
+                    [
+                      { text: 'MONTO: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.monto).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'INTERÉS: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.interes).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'TOTAL: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.total).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    //TOTAL IMPORTE EN LETRAS
+                    [
+                      {
+                        text: 'SON: ' + numeroALetras((data.total).toFixed(2), 'SOLES'),
+                        style: 'tProductsBody',
+                        colSpan: 4,
+                        margin: [10, 4, 0, 0],
+                      },
+                      {},
+                      {},
+                      {},
+                    ],
+                  ],
+                },
+                layout: 'noBorders',
+            },
+            //NOTA DE PIE
+            {
+                text: 'ESTE DOCUMENTO NO ES UN TICKET BAJO REGLAMENTO DE COMPROBANTE DE PAGO.',
+                style: 'text',
+                alignment: 'justify',
+                margin: [10, 15, 10, 0],
+            },
+        ];
+
+        const response = await ticket(output, content);
+
+        if (!response?.success) {
+        alert(response?.message);
+        return;
+        }
+
+        if (output === 'b64') {
+        setBase64(response?.content ?? '');
+        }
+
+        setMessage(response?.message);
+
+        setTimeout(() => {
+        setMessage('');
+        }, 2000);
+    };
+    // fin para ticket
+
     async function confirmCreatedCredito(){
         try{
             const response = await createdCredito(formData);
+
+            onGenerateTicket('print', response);
             
             setRegister(!register);
             setFormData(initialValues);
