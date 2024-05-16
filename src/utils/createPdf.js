@@ -1,9 +1,9 @@
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "./vfs_fonts";
+pdfMake.vfs = pdfFonts;
 
 import printjs from 'print-js';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const createPdf = async (props, output = 'print') => {
     return new Promise((resolve, reject) => {

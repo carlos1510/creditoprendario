@@ -332,7 +332,7 @@ function Cobros(){
     }
 
     const handleNewEdit = (datos) => {
-        console.log(datos);
+        
         setRegister(!register);
         let date = new Date();
         
