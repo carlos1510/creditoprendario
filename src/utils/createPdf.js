@@ -5,15 +5,15 @@ pdfMake.vfs = pdfFonts;
 import printjs from 'print-js';
 
 
-const createPdf = async (props, output = 'print') => {
+const createPdf = async (props, output = 'print', target = '') => {
     return new Promise((resolve, reject) => {
         try{
             const {
                 pageSize = {
-                    width: 226.77,
+                    width: 210.77,
                     height: 'auto',
                 },
-                pageMargins = [5.66, 5.66, 5.66, 5.66],
+                pageMargins = [3.66, 4.66, 3.66, 4.66],
                 info = {
                     title: 'F001-000001',
                     author: 'maclode',
@@ -22,44 +22,44 @@ const createPdf = async (props, output = 'print') => {
                 },
                 styles = {
                     header: {
-                        fontSize: 9,
+                        fontSize: 8,
                         bold: true,
                         alignment: 'center',
                     },
                     tHeaderLabel: {
-                    fontSize: 8,
+                    fontSize: 7,
                     alignment: 'right',
                     },
                     tHeaderValue: {
-                    fontSize: 8,
+                    fontSize: 7,
                     bold: true,
                     },
                     tProductsHeader: {
-                    fontSize: 8.5,
+                    fontSize: 7.5,
                     bold: true,
                     },
                     tProductsBody: {
-                    fontSize: 8,
+                    fontSize: 7,
                     },
                     tTotals: {
-                    fontSize: 9,
+                    fontSize: 8,
                     bold: true,
                     alignment: 'right',
                     },
                     tClientLabel: {
-                    fontSize: 8,
+                    fontSize: 7,
                     alignment: 'right',
                     },
                     tClientValue: {
-                    fontSize: 8,
+                    fontSize: 7,
                     bold: true,
                     },
                     text: {
-                    fontSize: 8,
+                    fontSize: 7,
                     alignment: 'center',
                     },
                     link: {
-                    fontSize: 8,
+                    fontSize: 7,
                     bold: true,
                     margin: [0, 0, 0, 4],
                     alignment: 'center',
@@ -90,7 +90,10 @@ const createPdf = async (props, output = 'print') => {
             }
 
             //ENVIAR A IMPRESIÓN DIRECTA
-            if(output === 'print'){
+            if(output === 'print' && target === '_blank'){
+                var win = window.open('', '_blank');
+                const pdfMakeCreatePdf = pdfMake.createPdf(docDefinition).print({}, win);
+            }else{
                 const pdfMakeCreatePdf = pdfMake.createPdf(docDefinition);
                 pdfMakeCreatePdf.getBase64((data) => {
                     printjs({

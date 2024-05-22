@@ -98,3 +98,40 @@ export async function deleteCobro(id){
     const body = await response.json();
     return Promise.reject(new Error(body.error));
 }
+
+export async function getNroComprobantePago(id){
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/pagos/comprobante/${id}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
+}
+
+export async function getNumeroPago() {
+    //obtenerNroContratoCredito
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/obtenerNroPago`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
+}

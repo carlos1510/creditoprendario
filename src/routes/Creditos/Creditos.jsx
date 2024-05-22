@@ -4,7 +4,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util';
 import Swal from "sweetalert2";
-import { createdCredito, deleteCredito, editCredito, getCreditos, getNroComprobante } from '../../services/creditos';
+import { createdCredito, deleteCredito, editCredito, getCreditos, getImprimirTicketCredito, getNroComprobante, getNumeroContratoCredito } from '../../services/creditos';
 import { numeroALetras } from '../../utils/numeroALetras';
 import { getClienteByNroDoc } from '../../services/clientes';
 import { getServicios } from '../../services/servicios';
@@ -22,9 +22,9 @@ const initialValues = {
     tipomoneda: "PEN",
     descripcion_bien: "",
     monto: "",
-    interes: "",
+    interes: 0,
     subtotal: "",
-    total: "",
+    total: 0,
     total_texto: "",
     descuento: "",
     montoactual: "",
@@ -40,7 +40,11 @@ const initialValues = {
     telefono1: "",
     telefono2: "",
     email: "",
-    cliente_id: null
+    cliente_id: null,
+    numerocredito: "",
+    codigocredito: "",
+    numerocontrato: "",
+    codigocontrato: ""
 };
 
 function Creditos(){
@@ -119,8 +123,20 @@ function Creditos(){
                 timer: 5000
             });
         }else{
-            setFormData({...formData, cliente_id: resultados.id?resultados.id:null, nombrescliente: resultados.nombrescliente});
+            setFormData({...formData, cliente_id: resultados.id?resultados.id:null, nombrescliente: resultados.nombrescliente, 
+                direccion: resultados.direccion?resultados.direccion:"", 
+                telefono1: resultados.telefono1?resultados.telefono1:"", 
+                telefono2: resultados.telefono2?resultados.telefono2:"",
+                referencia: resultados.referencia?resultados.referencia:"",
+                email: resultados.email?resultados.email:""});
+
         }
+    }
+
+    async function obtenerDuplicadoTicket(id){
+        const [resultados] = await Promise.all([getImprimirTicketCredito(id)]);
+        
+        onGenerateTicket('print', resultados);
     }
 
     //INICIO PARA TICKET
@@ -132,13 +148,17 @@ function Creditos(){
         setMessage('');
 
         const content = [
-            { text: '' + data.nombre_empresa, style: 'header', margin: [0, 10, 0, 0] },
-            { text: '' + data.direccion_empresa, style: 'header' },
-            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'header' },
+            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+            { text: '' + data.nombre_empresa, style: 'text' },
+            { text: '' + data.direccion_empresa, style: 'text' },
+            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
 
             //TIPO Y NUMERO DOCUMENTO
-            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 10, 0, 2.25] },
+            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 5, 0, 2.25] },
             { text: '' + data.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
 
             //DATOS CEBECERA FACTURAR
             {
@@ -171,10 +191,20 @@ function Creditos(){
                         {},
                         ],
                         [
-                            { text: 'FECHA LIMITE:', style: 'tTotals', alignment: 'left', colSpan: 2, margin: [15, 6, 0, 0] },
+                            { text: 'FECHA LIMITE:', style: 'tTotals', alignment: 'left', colSpan: 2, margin: [10, 6, 0, 0] },
                             {},
                             { text: '' + formatoFecha(data.fechalimite), style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 6, 0, 0] },
                             {},
+                        ],
+                        [
+                            {text: 'PLAZO:', style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [10, 0, 0, 0]},
+                            {},
+                            {text: '' + data.plazo, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
+                        ],
+                        [
+                            {text: 'N° CREDITO:', style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [10, 0, 0, 0]},
+                            {},
+                            {text: '' + data.codigocredito, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
                         ],
                     ],
                 },
@@ -188,18 +218,18 @@ function Creditos(){
                     body: [
                             [
                                 {
-                                    text: 'SERVICIO: ',
+                                    text: 'PRODUCTO: ',
                                     style: 'tTotals',
                                     alignment: 'left',
                                     colSpan: 4,
-                                    margin: [10, 6, 0, 0],
+                                    margin: [5, 3, 0, 0],
                                 },
                                 {},
                                 {},
                                 {},
                             ],
                             [
-                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [10, 0, 0, 0] },
+                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
                                 {},
                                 {},
                                 {},
@@ -210,7 +240,7 @@ function Creditos(){
                                     style: 'tTotals',
                                     alignment: 'left',
                                     colSpan: 4,
-                                    margin: [10, 6, 0, 0],
+                                    margin: [5, 6, 0, 0],
                                 },
                                 {},
                                 {},
@@ -221,7 +251,7 @@ function Creditos(){
                                     text: '' + data.descripcion_bien,
                                     style: 'tProductsBody',
                                     colSpan: 4,
-                                    margin: [10, 0, 0, 0],
+                                    margin: [5, 0, 0, 0],
                                 },
                                 {},
                                 {},
@@ -238,27 +268,16 @@ function Creditos(){
                   body: [
                     //TOTALES
                     [
-                      { text: 'MONTO: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
+                      { text: 'PRESTAMO', style: 'tTotals', alignment: 'left',colSpan: 2, margin: [5, 0, 0, 0], },
                       {},
-                      { text: '' + (data.monto).toFixed(2), style: 'tTotals', colSpan: 2 },
-                      {},
-                    ],
-                    [
-                      { text: 'INTERÉS: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
-                      {},
-                      { text: '' + (data.interes).toFixed(2), style: 'tTotals', colSpan: 2 },
-                      {},
-                    ],
-                    [
-                      { text: 'TOTAL: S/', style: 'tTotals', colSpan: 2, margin: [10, 0, 0, 0], },
-                      {},
-                      { text: '' + (data.total).toFixed(2), style: 'tTotals', colSpan: 2 },
-                      {},
+                      {text: 'S/:', alignment: 'left', style: 'tTotals'},
+                      { text: '' + (data.monto).toFixed(2), alignment: 'left',style: 'tTotals' },
+                      
                     ],
                     //TOTAL IMPORTE EN LETRAS
                     [
                       {
-                        text: 'SON: ' + numeroALetras((data.total).toFixed(2), 'SOLES'),
+                        text: 'SON: ' + numeroALetras((data.monto).toFixed(2), 'SOLES'),
                         style: 'tProductsBody',
                         colSpan: 4,
                         margin: [10, 4, 0, 0],
@@ -276,11 +295,11 @@ function Creditos(){
                 text: 'ESTE DOCUMENTO NO ES UN TICKET BAJO REGLAMENTO DE COMPROBANTE DE PAGO.',
                 style: 'text',
                 alignment: 'justify',
-                margin: [10, 15, 10, 0],
+                margin: [5, 15, 10, 0],
             },
         ];
 
-        const response = await ticket(output, content);
+        const response = await ticket(output, '', content);
 
         if (!response?.success) {
         alert(response?.message);
@@ -367,7 +386,8 @@ function Creditos(){
         }
     }
 
-    function calcularInteresMonto(event, tipo) {
+    function handlerCalcularFechaLimite(event, tipo) {
+        
         let fechaObtenido = "";
         let idServicio = 0;
         let monto_ingresado = 0;
@@ -397,18 +417,12 @@ function Creditos(){
                 parseInt(a.id) === parseInt(idServicio)
             )
     
-            if(parseFloat(monto_ingresado) !== ''){
-                interes_calculado = (parseFloat(monto_ingresado) * parseFloat(servicio.porcentaje))/100.00;
-            }
-    
-            total_monto = (parseFloat(monto_ingresado) + parseFloat(interes_calculado));
-    
-            calcularFechaLimite(fechaObtenido, servicio.periodo, servicio.numeroperiodo, total_monto, interes_calculado, servicio.id);
+            calcularFechaLimite(fechaObtenido, servicio.periodo, servicio.numeroperiodo, monto_ingresado, servicio.id);
         }
         
     }
 
-    function calcularFechaLimite(fechaObtenido,periodo, numero, total_monto, interes_calculado, servicio_id){
+    function calcularFechaLimite(fechaObtenido,periodo, numero, monto, servicio_id){
         let fecha = new Date(fechaObtenido);
         let fechagenerado = "";
         if(periodo === 'DIAS'){
@@ -423,7 +437,7 @@ function Creditos(){
             fechagenerado = ('0'+fecha.getDate()).toString().substr(-2)+'/'+('0'+(fecha.getMonth()+1)).toString().substr(-2)+'/'+fecha.getFullYear();
         }
 
-        setFormData({...formData, total: total_monto, interes: interes_calculado, fechalimite: fechagenerado, servicio_id: servicio_id, total_texto: numeroALetras(total_monto, 'SOLES')});
+        setFormData({...formData, fecha: fechaObtenido, fechalimite: fechagenerado, servicio_id: servicio_id, total_texto: numeroALetras(monto, 'SOLES')});
         
     }
 
@@ -437,6 +451,12 @@ function Creditos(){
         const [resultado] = await Promise.all([getNroComprobante(event.target.value)]);
 
         setFormData({...formData, seriecorrelativo: resultado.seriecorrelativo, numerocorrelativo: resultado.numerocorrelativo, codigogenerado: resultado.codigogenerado, tipo_comprobante_id: event.target.value});
+    }
+
+    async function obtenerNroContratoCredito(){
+        const [resultado] = await Promise.all([getNumeroContratoCredito()]);
+
+        setFormData({...formData, numerocredito: resultado.numerocredito, codigocredito: resultado.codigocredito, numerocontrato: resultado.numerocontrato, codigocontrato: resultado.codigocontrato});
     }
 
     function handleChange(event){
@@ -486,6 +506,10 @@ function Creditos(){
                 telefono1: datos.telefono1?datos.telefono1:'',
                 telefono2: datos.telefono2?datos.telefono2:'',
                 email: datos.email?datos.email:'',
+                numerocredito: datos.numerocredito,
+                codigocredito: datos.codigocredito,
+                numerocontrato: datos.numerocontrato,
+                codigocontrato: datos.codigocontrato,
                 cliente_id: datos.cliente_id?datos.cliente_id:null 
             });
 
@@ -499,6 +523,7 @@ function Creditos(){
             setFormData(initialValues);
             
             setFormData({...formData, fecha: fechaActual});
+            obtenerNroContratoCredito();
         }
         
     }
@@ -541,10 +566,10 @@ function Creditos(){
         <>
             {
                 estadoApertura !== 0?(
-                    <div class=' space-y-6'>
-                        <div class="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
-                            <p class="font-bold">Información de Apertura de Caja</p>
-                            <p class="text-sm">
+                    <div className=' space-y-6'>
+                        <div className="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
+                            <p className="font-bold">Información de Apertura de Caja</p>
+                            <p className="text-sm">
                                 Debe Aperturar Caja para poder Realizar el Registro de Creditos
                             </p>
                         </div>
@@ -565,9 +590,9 @@ function Creditos(){
                         }
                         <div className="grid md:grid-cols-3 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="tipo_comprobante_idCmb" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Comprobante <span className='text-red-600'>*</span></label>
+                                <label htmlFor="tipo_comprobante_idCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Comprobante <span className='text-red-600'>*</span></label>
                                 <select id="tipo_comprobante_idCmb" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='tipo_comprobante_id'
                                     value={formData.tipo_comprobante_id}
                                     onChange={ (event) => {handleChange(event); obtenerNroComprobante(event) }}
@@ -580,10 +605,10 @@ function Creditos(){
                                 </select>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="codigogeneradoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nro. Comprobante <span className='text-red-600'>*</span></label>
+                                <label htmlFor="codigogeneradoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nro. Comprobante <span className='text-red-600'>*</span></label>
                                 <input type="text" 
                                     id="codigogeneradoTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='codigogenerado'
                                     value={formData.codigogenerado}
                                     required
@@ -591,13 +616,13 @@ function Creditos(){
                                 />
                             </div>
                             <div className="relative w-full mb-5 group">
-                                <label htmlFor="fechaTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha <span className='text-red-600'>*</span></label>
-                                <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
+                                <label htmlFor="fechaTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Fecha <span className='text-red-600'>*</span></label>
+                                <Datepicker inputClassName="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300 focus:outline-none border-solid focus:border-dashed"
                                     useRange={false} 
                                     asSingle={true} 
                                     value={fechaHoy} 
                                     name='fechaHoy'
-                                    onChange={(event) => { handleFechaHoyChange(event); calcularInteresMonto(event, 2)}} 
+                                    onChange={(event) => { handleFechaHoyChange(event); handlerCalcularFechaLimite(event, 1);}} 
                                     displayFormat={"DD/MM/YYYY"} 
                                     readOnly
                                     required
@@ -605,11 +630,36 @@ function Creditos(){
                                 
                             </div>
                         </div>
+                        <div className="grid md:grid-cols-2 md:gap-6">
+                            <div className="relative z-0 w-full mb-5 group">
+                                <label htmlFor="codigocreditoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nro. Credito <span className='text-red-600'>*</span></label>
+                                <input type="text" 
+                                    id="codigocreditoTxt" 
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    name='codigocredito'
+                                    value={formData.codigocredito}
+                                    onChange={handleChange}
+                                    readOnly
+                                />
+                            </div>
+                            <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="codigocontratoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nro. Contrato <span className='text-red-600'>*</span></label>
+                                <input type="text" 
+                                    id="codigocontratoTxt" 
+                                    className="bg-gray-50 text-lg border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    name='codigocontrato'
+                                    value={formData.codigocontrato}
+                                    onChange={handleChange}
+                                    readOnly
+                                />
+                            </div>
+                        </div>
+                        <hr className='mb-4' />
                         <div className="grid md:grid-cols-3 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Documento <span className='text-red-600'>*</span></label>
+                                <label htmlFor="countries" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Documento <span className='text-red-600'>*</span></label>
                                 <select id="countries" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='tipodocumento'
                                     value={formData.tipodocumento}
                                     onChange={handleChange}
@@ -621,10 +671,10 @@ function Creditos(){
                                 </select>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="numerodocumentoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nro. Documento <span className='text-red-600'>*</span></label>
+                                <label htmlFor="numerodocumentoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nro. Documento <span className='text-red-600'>*</span></label>
                                 <input type="text" 
                                     id="numerodocumentoTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='numerodocumento'
                                     value={formData.numerodocumento}
                                     onChange={handleChange}
@@ -633,7 +683,7 @@ function Creditos(){
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
                                 <button type="button" 
-                                    className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto md:mt-7 px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg sm:w-auto md:mt-9 px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={obtenerClienteByNumDoc}
                                 >
                                     <i className='fas fa-search'></i> Buscar
@@ -641,10 +691,10 @@ function Creditos(){
                             </div>
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="nombresclienteTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombres del Cliente <span className='text-red-600'>*</span></label>
+                            <label htmlFor="nombresclienteTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nombres del Cliente <span className='text-red-600'>*</span></label>
                             <input type="text" 
                                 id="nombresclienteTxt" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='nombrescliente'
                                 value={formData.nombrescliente}
                                 onChange={handleChange}
@@ -652,20 +702,20 @@ function Creditos(){
                             />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="direccionTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección del Cliente</label>
+                            <label htmlFor="direccionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Dirección del Cliente</label>
                             <input type="text" 
                                 id="direccionTxt" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='direccion'
                                 value={formData.direccion}
                                 onChange={handleChange}
                             />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="referenciaTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Referencia</label>
+                            <label htmlFor="referenciaTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Referencia</label>
                             <input type="text" 
                                 id="referenciaTxt" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='referencia'
                                 value={formData.referencia}
                                 onChange={handleChange}
@@ -673,20 +723,20 @@ function Creditos(){
                         </div>
                         <div className="grid md:grid-cols-2 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="telefono1Txt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Celular 1</label>
+                                <label htmlFor="telefono1Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Celular 1</label>
                                 <input type="number" 
                                     id="telefono1Txt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='telefono1'
                                     value={formData.telefono1}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="telefono2Txt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Celular 2</label>
+                            <label htmlFor="telefono2Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Celular 2</label>
                                 <input type="number" 
                                     id="telefono2Txt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='telefono2'
                                     value={formData.telefono2}
                                     onChange={handleChange}
@@ -694,10 +744,10 @@ function Creditos(){
                             </div>
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="emailTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo Electronico</label>
+                            <label htmlFor="emailTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Correo Electronico</label>
                             <input type="email" 
                                 id="emailTxt" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='email'
                                 value={formData.email}
                                 onChange={handleChange}
@@ -706,12 +756,12 @@ function Creditos(){
                         
                         <div className="grid md:grid-cols-2 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="servicio_idCmb" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Servicio <span className='text-red-600'>*</span></label>
+                                <label htmlFor="servicio_idCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Servicio <span className='text-red-600'>*</span></label>
                                 <select id="servicio_idCmb" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='servicio_id'
                                     value={formData.servicio_id}
-                                    onChange={(event) => { handleChange(event), calcularInteresMonto(event, 1)}}
+                                    onChange={(event) => {handleChange(event); handlerCalcularFechaLimite(event, 2);}}
                                     required 
                                 >
                                     <option value="">---</option>
@@ -725,10 +775,10 @@ function Creditos(){
                                 </select>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="descripcion_bienTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Detalle del Bien/Producto <span className='text-red-600'>*</span></label>
+                                <label htmlFor="descripcion_bienTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Detalle del Bien/Producto <span className='text-red-600'>*</span></label>
                                 <input type="text" 
                                     id="descripcion_bienTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='descripcion_bien'
                                     value={formData.descripcion_bien}
                                     onChange={handleChange}
@@ -737,11 +787,11 @@ function Creditos(){
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 md:gap-6">
+                        <div className="grid md:grid-cols-3 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="tipomonedaCmb" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Moneda <span className='text-red-600'>*</span></label>
+                                <label htmlFor="tipomonedaCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Moneda <span className='text-red-600'>*</span></label>
                                 <select id="tipomonedaCmb" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='tipomoneda'
                                     value={formData.tipomoneda}
                                     onChange={handleChange}
@@ -753,50 +803,22 @@ function Creditos(){
                                 </select>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="montoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Monto <span className='text-red-600'>*</span></label>
+                                <label htmlFor="montoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">PRESTAMO <span className='text-red-600'>*</span></label>
                                 <input type="input" 
                                     id="montoTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='monto'
                                     value={formData.monto}
                                     onChange={handleChange}
-                                    onBlur={(event) => calcularInteresMonto(event, 3)}
+                                    onBlur={(event) => handlerCalcularFechaLimite(event, 3)}
                                     required 
                                 />
                             </div>
-                            
-                        </div>
-
-                        <div className="grid md:grid-cols-3 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="interesTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interes <span className='text-red-600'>*</span></label>
-                                <input type="input" 
-                                    id="interesTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    name='interes'
-                                    value={formData.interes}
-                                    onChange={handleChange}
-                                    required 
-                                    readOnly
-                                />
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="totalTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total <span className='text-red-600'>*</span></label>
-                                <input type="text" 
-                                    id="totalTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    name='total'
-                                    value={formData.total}
-                                    onChange={handleChange}
-                                    required 
-                                    readOnly
-                                />
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="fechalimiteTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha Limite <span className='text-red-600'>*</span></label>
+                                <label htmlFor="fechalimiteTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Fecha Limite <span className='text-red-600'>*</span></label>
                                 <input type="text" 
                                     id="fechalimiteTxt" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='fechalimite'
                                     value={formData.fechalimite}
                                     onChange={handleChange}
@@ -804,12 +826,14 @@ function Creditos(){
                                     readOnly
                                 />
                             </div>
+                            
                         </div>
+
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="total_textoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Son: <span className='text-red-600'>*</span></label>
+                            <label htmlFor="total_textoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Son: <span className='text-red-600'>*</span></label>
                             <input type="text" 
                                 id="total_textoTxt" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 name='total_texto'
                                 value={formData.total_texto}
                                 onChange={handleChange}
@@ -923,17 +947,16 @@ function Creditos(){
                     <table className="w-full table-auto text-sm border-t border-grey-light">
                         <thead>
                             <tr className="text-sm leading-normal">
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE COMPROBANTE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. COMPROBANTE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Nro. Credito</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. Contrato</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE SERVICIO</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">DESCRIPCION</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. DOC. CLIENTE</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NOMBRES CLIENTE</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA LIMITE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">MONTO</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">INTERES</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TOTAL</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">iMPRIMIR</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">EDITAR</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">ELIMINAR</th>
                             </tr>
@@ -951,8 +974,9 @@ function Creditos(){
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.nombrescliente}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{formatoFecha(credito.fechalimite)}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-right">S/. {credito.monto}</td>
-                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {credito.interes}</td>
-                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/.{credito.total}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-center">
+                                            <button type='button' className="bg-yellow-300 hover:bg-yellow-400 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> obtenerDuplicadoTicket(credito.id)}><i className="fas fa-print"></i></button>
+                                        </td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
                                             {
                                                 estadoApertura===0?(

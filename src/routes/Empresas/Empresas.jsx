@@ -9,6 +9,7 @@ const initialValues = {
     id: 0,
     tipodocumentoid: "",
     numerodocumento: "",
+    nombrenegocio: "",
     nombre: "",
     email: "",
     direccion: "",
@@ -19,7 +20,7 @@ const initialValues = {
 };
 
 function Empresas(){
-    useTitle('Pago Alquiler');
+    useTitle('Empresas');
     const [empresas, setEmpresas] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
     const totalPage = empresas.length;
@@ -136,7 +137,8 @@ function Empresas(){
                 numerodocumento: datos.numerodocumento,
                 email: datos.email?datos.email:'',
                 direccion: datos.direccion?datos.direccion:'',
-                telefono: datos.telefono?datos.telefono:''
+                telefono: datos.telefono?datos.telefono:'',
+                nombrenegocio: datos.nombrenegocio
             });
         }else{
             setFormData(initialValues);
@@ -181,9 +183,9 @@ function Empresas(){
                     <div className="grid md:grid-cols-3 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
                             <label htmlFor="tipodocumentoidCmb" 
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Documento <span className='text-red-600'>*</span></label> 
+                                className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Documento <span className='text-red-600'>*</span></label> 
                             <select id="tipodocumentoidCmb" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid"
+                                className="w-full px-3 py-2 text-lg dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid"
                                 name='tipodocumentoid'  
                                 value={formData.tipodocumentoid}
                                 onChange={handleChange} 
@@ -195,10 +197,10 @@ function Empresas(){
                             </select>
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="numerodocumentoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nro. Documento <span className='text-red-600'>*</span></label> 
+                            <label htmlFor="numerodocumentoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nro. Documento <span className='text-red-600'>*</span></label> 
                             <input type="text" 
                                 id="numerodocumentoTxt" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
                                 value={formData.numerodocumento}
                                 onChange={handleChange} 
                                 name='numerodocumento'
@@ -213,10 +215,10 @@ function Empresas(){
                     </div>
                     <div className="grid grid-cols-1 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="nombreTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Razón Social <span className='text-red-600'>*</span></label> 
+                            <label htmlFor="nombreTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Razón Social <span className='text-red-600'>*</span></label> 
                             <input type="text" 
                                 id="nombreTxt" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                className="w-full px-3 py-2 uppercase dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
                                 value={formData.nombre}
                                 onChange={handleChange} 
                                 name='nombre'
@@ -226,10 +228,23 @@ function Empresas(){
                     </div>
                     <div className="grid grid-cols-1 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="direccionTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección </label> 
+                            <label htmlFor="nombrenegocioTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nombre del Negocio <span className='text-red-600'>*</span></label> 
+                            <input type="text" 
+                                id="nombrenegocioTxt" 
+                                className="w-full px-3 py-2 text-lg uppercase dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                value={formData.nombrenegocio}
+                                onChange={handleChange} 
+                                name='nombrenegocio'
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:gap-6">
+                        <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="direccionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Dirección </label> 
                             <input type="text" 
                                 id="direccionTxt" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
                                 value={formData.direccion}
                                 onChange={handleChange} 
                                 name='direccion'
@@ -238,20 +253,20 @@ function Empresas(){
                     </div>
                     <div className="grid md:grid-cols-2 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="telefonoTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Telefono </label> 
+                            <label htmlFor="telefonoTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Telefono </label> 
                             <input type="number" 
                                 id="telefonoTxt" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
                                 value={formData.telefono}
                                 onChange={handleChange} 
                                 name='telefono'
                             />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="emailTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label> 
+                            <label htmlFor="emailTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Email</label> 
                             <input type="email" 
                                 id="emailTxt" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
                                 value={formData.email}
                                 onChange={handleChange} 
                                 name='email'
@@ -309,7 +324,7 @@ function Empresas(){
                 <table className="w-full table-auto text-sm border-t border-grey-light">
                     <thead>
                         <tr className="text-sm leading-normal">
-                            <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE DOC</th>
+                            <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NOMBRE NEGOCIO</th>
                             <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. DOCUMENTO</th>
                             <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">RAZON SOCIAL</th>
                             <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TELEFONO</th>
@@ -323,7 +338,7 @@ function Empresas(){
                         {
                             empresas?.map((empresa) => 
                                 (<tr className="hover:bg-grey-lighter" key={empresa.id}>
-                                    <td className="py-2 px-4 border-b border-grey-light text-center">{empresa.tipodocumentoid}</td>
+                                    <td className="py-2 px-4 border-b border-grey-light text-center">{empresa.nombrenegocio}</td>
                                     <td className="py-2 px-4 border-b border-grey-light text-center">{empresa.numerodocumento}</td>
                                     <td className="py-2 px-4 border-b border-grey-light text-center">{empresa.nombre}</td>
                                     <td className="py-2 px-4 border-b border-grey-light text-center">{empresa.telefono}</td>

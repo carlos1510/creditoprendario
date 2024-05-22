@@ -133,3 +133,40 @@ export async function getCreditoByDocumento(fecha1, fecha2, nroDocumento){
     const body = await response.json();
     return body.data;
 }
+
+export async function getNumeroContratoCredito() {
+    //obtenerNroContratoCredito
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/obtenerNroContratoCredito`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body.data;
+}
+
+export async function getImprimirTicketCredito(id) {
+    //const token = authProvider.token;
+
+    const url = `${URL_BASE}/imprimirTicketCredito/${id}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+    return body;
+}

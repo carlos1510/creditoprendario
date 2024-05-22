@@ -1,6 +1,6 @@
 import createPdf from './createPdf.js';
 
-const generateTicket = async (output, content) => {
+const generateTicket = async (output, target, content) => {
   /*const content = [
     //DATOS EMPRESA
     {
@@ -340,7 +340,7 @@ const generateTicket = async (output, content) => {
     },
   ];*/
 
-  const response = await createPdf({ content }, output);
+  const response = await createPdf({ content }, output, target);
   return response;
 };
 

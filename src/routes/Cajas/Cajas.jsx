@@ -21,7 +21,10 @@ const initialValues = {
     montocierre: "",
     empresa_id: 1,
     user_id: 1,
-    responsable: ""
+    responsable: "",
+    interessocio: "",
+    interesnegocio: "",
+    totalcapital: ""
 };
 
 function Cajas(){
@@ -103,7 +106,13 @@ function Cajas(){
             empresa_id: datos.empresa_id, 
             user_id: datos.user_id,
             responsable: user.nombres + " " + user.apellidos,
-            montocobro: resultados.montocobro, montocredito:resultados.montocredito, montocierre:resultados.montocierre});
+            montocobro: resultados.montocobro, 
+            montocredito:resultados.montocredito, 
+            montocierre:resultados.montocierre,
+            interessocio: resultados.interessocio,
+            interesnegocio: resultados.interesnegocio,
+            totalcapital: resultados.totalcapital
+        });
     }
 
     async function verificarAperturaExistente(){
@@ -301,114 +310,153 @@ function Cajas(){
                                 <div className='relative z-0 w-full mb-5 group'>
                                 <input type="text" 
                                             id="responsableTxt"
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="responsable" 
                                             value={formData.responsable}
                                             readOnly
                                         />
-                                        <label htmlFor="responsableTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Responsable</label>
+                                        <label htmlFor="responsableTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Responsable</label>
                                 </div>
                                 <div className="grid md:grid-cols-2 md:gap-6">
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="fechaAperturaTxt"
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="fechaapertura" 
                                             value={formData.fechaapertura}
                       
                                             readOnly
                                         />
-                                        <label htmlFor="fechaAperturaTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Apertura</label>
+                                        <label htmlFor="fechaAperturaTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Apertura</label>
                                     </div>
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="horaAperturaTxt" 
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="horaapertura" 
                                             value={formData.horaapertura}
 
                                             readOnly
                                         />
-                                        <label htmlFor="horaAperturaTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Apertura</label>
+                                        <label htmlFor="horaAperturaTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Apertura</label>
                                     </div>
                                 </div>
                                 <div className="grid md:grid-cols-2 md:gap-6">
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="fechaCierreTxt"
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="fechacierre" 
                                             value={formData.fechacierre}
                                             readOnly
                                         />
-                                        <label htmlFor="fechaCierreTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Cierre</label>
+                                        <label htmlFor="fechaCierreTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Cierre</label>
                                     </div>
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="horaCierreTxt" 
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="horacierre" 
                                             value={formData.horacierre}
                                             readOnly
                                         />
-                                        <label htmlFor="horaCierreTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Cierre</label>
+                                        <label htmlFor="horaCierreTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Cierre</label>
                                     </div>
                                 </div>
 
                                 <div className="relative z-0 w-full mb-5 group">
                                     <input type="number" 
                                         id="montoInicialTxt" 
-                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                        className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                         placeholder=" " 
                                         name='montoinicial'
                                         value={formData.montoinicial}
                                         readOnly 
                                     />
-                                    <label htmlFor="montoInicialTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Monto Inicial</label>
-                                </div>
-                                <div className="relative z-0 w-full mb-5 group">
-                                    <input type="number" 
-                                        id="montocobroTxt" 
-                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
-                                        placeholder=" " 
-                                        name='montocobro'
-                                        value={formData.montocobro}
-                                        readOnly 
-                                    />
-                                    <label htmlFor="montocobroTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Cobros</label>
+                                    <label htmlFor="montoInicialTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Monto Inicial</label>
                                 </div>
                                 <div className="relative z-0 w-full mb-5 group">
                                     <input type="number" 
                                         id="montocreditoTxt" 
-                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                        className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                         placeholder=" " 
                                         name='montocredito'
                                         value={formData.montocredito}
                                         readOnly 
                                     />
-                                    <label htmlFor="montocreditoTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Creditos</label>
+                                    <label htmlFor="montocreditoTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Creditos</label>
                                 </div>
+                                <div className="grid md:grid-cols-2 md:gap-6">
+                                    <div className="relative z-0 w-full mb-5 group">
+                                        <input type="text" 
+                                            id="interessocioTxt"
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            placeholder=" "
+                                            name="interessocio" 
+                                            value={formData.interessocio}
+                                            readOnly
+                                        />
+                                        <label htmlFor="interessocioTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cobros Intereses Socio</label>
+                                    </div>
+                                    <div className="relative z-0 w-full mb-5 group">
+                                        <input type="text" 
+                                            id="interesnegocioTxt" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            placeholder=" "
+                                            name="interesnegocio" 
+                                            value={formData.interesnegocio}
+                                            readOnly
+                                        />
+                                        <label htmlFor="interesnegocioTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cobros Intereses Negocio</label>
+                                    </div>
+                                </div>
+                                <div className="grid md:grid-cols-2 md:gap-6">
+                                    <div className="relative z-0 w-full mb-5 group">
+                                        <input type="text" 
+                                            id="totalcapitalTxt"
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            placeholder=" "
+                                            name="totalcapital" 
+                                            value={formData.totalcapital}
+                                            readOnly
+                                        />
+                                        <label htmlFor="totalcapitalTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Cobro Capital</label>
+                                    </div>
+                                    <div className="relative z-0 w-full mb-5 group">
+                                        <input type="number" 
+                                            id="montocobroTxt" 
+                                            className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            placeholder=" " 
+                                            name='montocobro'
+                                            value={formData.montocobro}
+                                            readOnly 
+                                        />
+                                        <label htmlFor="montocobroTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Cobros</label>
+                                    </div>
+                                </div>
+                                
+                                
                                
                                 <div className="relative z-0 w-full mb-5 group">
                                     <input type="number" 
                                         id="montoCierreTxt" 
-                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                        className="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                         placeholder=" " 
                                         name='montocierre'
                                         value={formData.montocierre}
                                         readOnly 
                                     />
-                                    <label htmlFor="montoCierreTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Monto de Cierre</label>
+                                    <label htmlFor="montoCierreTxt" className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Total Monto de Cierre</label>
                                 </div>
-                                <button type="submit" className="text-white bg-blue-700 mt-2 mr-1 ml-1 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <button type="submit" className="text-white bg-blue-700 mt-2 mr-1 ml-1 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg  w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <i className='fas fa-save'></i> Guardar
                                 </button>
-                                <button type="button" className="text-white bg-red-700 mt-2 mr-1 ml-1 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
+                                <button type="button" className="text-white bg-red-700 mt-2 mr-1 ml-1 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg  w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
                                 onClick={()=> setRegister(!register)}>
                                     <i className='fas fa-times'></i> Salir
                                 </button>
@@ -443,43 +491,43 @@ function Cajas(){
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="fechaAperturaTxt"
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full  text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="fechaapertura" 
                                             value={formData.fechaapertura}
                                             readOnly
                                         />
-                                        <label htmlFor="fechaAperturaTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Apertura</label>
+                                        <label htmlFor="fechaAperturaTxt" className="peer-focus:font-medium absolute  text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha de Apertura</label>
                                     </div>
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input type="text" 
                                             id="horaAperturaTxt" 
-                                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                            className="block py-2.5 px-0 w-full  text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                             placeholder=" "
                                             name="horaapertura" 
                                             value={formData.horaapertura}
                                             readOnly
                                         />
-                                        <label htmlFor="horaAperturaTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Apertura</label>
+                                        <label htmlFor="horaAperturaTxt" className="peer-focus:font-medium absolute  text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora de Apertura</label>
                                     </div>
                                 </div>
 
                                 <div className="relative z-0 w-full mb-5 group">
                                     <input type="number" 
                                         id="montoInicialTxt" 
-                                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                        className="block py-2.5 px-0 w-full  text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
                                         placeholder=" " 
                                         name='montoinicial'
                                         value={formData.montoinicial}
                                         onChange={handleChange}
                                         required 
                                     />
-                                    <label htmlFor="montoInicialTxt" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Monto Inicial</label>
+                                    <label htmlFor="montoInicialTxt" className="peer-focus:font-medium absolute  text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Monto Inicial</label>
                                 </div>
-                                <button type="submit" className="text-white bg-blue-700 mt-2 mr-1 ml-1 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <button type="submit" className="text-white bg-blue-700 mt-2 mr-1 ml-1 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg  w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <i className='fas fa-save'></i> Guardar
                                 </button>
-                                <button type="button" className="text-white bg-red-700 mt-2 mr-1 ml-1 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
+                                <button type="button" className="text-white bg-red-700 mt-2 mr-1 ml-1 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg  w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
                                 onClick={()=> setRegister(!register)}>
                                     <i className='fas fa-times'></i> Salir
                                 </button>
@@ -497,7 +545,7 @@ function Cajas(){
                             estadoApertura===-1?(
                                 <div className="text-right">
                                     <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, false, null)}>
-                                        <i className="fas fa-plus-circle"></i> Agregar
+                                        <i className="fas fa-unlock"></i> Aperturar Caja
                                     </button>
                                 </div>
                             ):("")
@@ -553,28 +601,30 @@ function Cajas(){
                             </select>
                         </div>
                     </div>
-                    <table className="w-full table-auto text-sm border-t border-grey-light">
+                    <table className="w-full table-auto  border-t border-grey-light">
                         <thead>
-                            <tr className="text-sm leading-normal">
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">RESPONSABLE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA Y HORA APERTURA</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">MONTO INICIAL</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA Y HORA CIERRE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">MONTO CIERRE</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-right">Cerrar Caja</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">Editar</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">Eliminar</th>
+                            <tr className=" leading-normal">
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">RESPONSABLE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">FECHA Y HORA APERTURA</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">MONTO INICIAL</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">FECHA Y HORA CIERRE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">MONTO SOCIO</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light">MONTO CIERRE</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light text-right">Cerrar Caja</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light text-center">Editar</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase  text-grey-light border-b border-grey-light text-center">Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 cajas?.map((caja) => 
                                     (<tr className="hover:bg-grey-lighter" key={caja.id}>
-                                        <td className="py-2 px-4 border-b border-grey-light text-center">{caja.nombres} {caja.apellidos}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-center">{caja.nombres}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">{formatoFecha(caja.fechaapertura)} {caja.horaapertura}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-right">S/. {caja.montoinicial}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">{caja.fechacierre!==null?formatoFecha(caja.fechacierre):''} {caja.horacierre}</td>
-                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {caja.montocierre!==null?caja.montocierre:0.00}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {caja.interessocio!==null?(caja.interessocio).toFixed(2):0.00}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-right">S/. {caja.montocierre!==null?(caja.montocierre).toFixed(2):0.00}</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
                                             {
                                                 caja.estado!==2?(

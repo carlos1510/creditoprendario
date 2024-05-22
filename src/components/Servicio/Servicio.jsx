@@ -11,6 +11,8 @@ const initialValues = {
     descripcion: "",
     periodo: "",
     numeroperiodo: "",
+    porcentajesocio: "",
+    porcentajenegocio: "",
     porcentaje: "",
     empresa_id: 1
 };
@@ -105,6 +107,13 @@ function Servicio(){
         setServicios(resultados);
     }
 
+    const handlePorcentajeTotal = () => {
+        if( !isNaN( parseFloat(formData.porcentajesocio)) && !isNaN(parseInt(formData.porcentajenegocio))){
+            const porcentajeTotal = parseFloat(formData.porcentajesocio) + parseInt(formData.porcentajenegocio);
+            setFormData({ ...formData, porcentaje: porcentajeTotal });
+        }
+    }
+
     function handleChange(event){
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -132,6 +141,8 @@ function Servicio(){
                 descripcion: datos.descripcion?datos.descripcion:'',
                 periodo: datos.periodo,
                 numeroperiodo: datos.numeroperiodo,
+                porcentajesocio: datos.porcentajesocio,
+                porcentajenegocio: datos.porcentajenegocio,
                 porcentaje: datos.porcentaje,
                 empresa_id: datos.empresa_id
             });
@@ -175,11 +186,11 @@ function Servicio(){
                             <input type="hidden" name="id" value={formData.id} />
                         )
                     }
-                    <div className="grid grid-cols-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="ml-2 mr-2 col-span-4 md:col-span-1 sm:col-span-4">
-                            <label htmlFor="">TIPO DE SERVICIO </label><span className='text-red-600'>*</span>
+                            <label htmlFor="" className='text-lg'>TIPO DE SERVICIO </label><span className='text-red-600'>*</span>
                             <input type="text" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                                className="w-full px-3 py-2 uppercase dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
                                 name='tiposervicio'
                                 value={formData.tiposervicio} 
                                 onChange={handleChange} 
@@ -187,8 +198,8 @@ function Servicio(){
                             />
                         </div>
                         <div className="ml-2 mr-2">
-                            <label htmlFor="">PERIODO </label><span className='text-red-600'>*</span>
-                            <select className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                            <label htmlFor="" className='text-lg'>PERIODO </label><span className='text-red-600'>*</span>
+                            <select className="w-full px-3 text-lg py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
                                 value={formData.periodo}
                                 onChange={handleChange}
                                 name='periodo'
@@ -201,31 +212,56 @@ function Servicio(){
                             </select>
                         </div>
                         <div className="ml-2 mr-2">
-                            <label htmlFor="">NUMERO DEL PERIODO </label> <span className='text-red-600'>*</span>
+                            <label htmlFor="" className='text-lg'>NUMERO DEL PERIODO </label> <span className='text-red-600'>*</span>
                             <input type="number" 
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                                className="w-full px-3 py-2 text-lg dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
                                 name='numeroperiodo'
                                 value={formData.numeroperiodo} 
                                 onChange={handleChange} 
                                 required
                                 />
                         </div>
+                        
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="ml-2 mr-2">
-                            <label htmlFor="">PORCENTAJE </label> <span className='text-red-600'>*</span>
+                            <label htmlFor="" className='text-lg'>PORCENTAJE SOCIO </label> <span className='text-red-600'>*</span>
                             <input type="number" 
                                 className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                                name='porcentajesocio'
+                                value={formData.porcentajesocio} 
+                                onChange={handleChange}
+                                onBlur={handlePorcentajeTotal}
+                                required
+                            />
+                        </div>
+                        <div className="ml-2 mr-2">
+                            <label htmlFor="" className='text-lg'>PORCENTAJE NEGOCIO</label> <span className='text-red-600'>*</span>
+                            <input type="number" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                                name='porcentajenegocio'
+                                value={formData.porcentajenegocio} 
+                                onChange={handleChange}
+                                onBlur={handlePorcentajeTotal}
+                                required
+                            />
+                        </div>
+                        <div className="ml-2 mr-2">
+                            <label htmlFor="" className='text-lg'>PORCENTAJE TOTAL</label> <span className='text-red-600'>*</span>
+                            <input type="number" 
+                                className="bg-gray-50 w-full text-lg px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
                                 name='porcentaje'
                                 value={formData.porcentaje} 
-                                onChange={handleChange}
                                 required
+                                readOnly
                             />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 ">
                         <div className="ml-2 mr-2 pt-5">
-                            <label htmlFor="">DESCRIPCION</label>
+                            <label htmlFor="" className='text-lg'>DESCRIPCION</label>
                             <textarea  
-                                className="w-full px-3 py-2 dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
+                                className="w-full px-3 py-2 text-lg dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid " 
                                 name='descripcion'
                                 value={formData.descripcion} 
                                 onChange={handleChange}
