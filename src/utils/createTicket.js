@@ -9,22 +9,11 @@ const createPdf = async (props, output = 'print', target = '') => {
     return new Promise((resolve, reject) => {
         try{
             const {
-                pageSize = 'A4',
-                pageOrientation = 'portrait',
-                pageMargins = [20, 30, 30, 20],
-                footer = function(currentPage, pageCount){
-                    return {
-                        table: {
-                            widths: ['100%'],
-                            body: [
-                                [
-                                    { text: 'PAG. ' + currentPage.toString() + '/' + pageCount, style: 'textRight', margin: [0,0,20,0]}
-                                ]
-                            ]
-                        },
-                        layout: 'noBorders',
-                    }
+                pageSize = {
+                    width: 210.77,
+                    height: 'auto',
                 },
+                pageMargins = [3.66, 4.66, 3.66, 4.66],
                 info = {
                     title: 'F001-000001',
                     author: 'maclode',
@@ -33,46 +22,24 @@ const createPdf = async (props, output = 'print', target = '') => {
                 },
                 styles = {
                     header: {
-                        fontSize: 12,
+                        fontSize: 8,
                         bold: true,
                         alignment: 'center',
                     },
                     tHeaderLabel: {
-                        fontSize: 10,
-                        alignment: 'left',
-                        bold: true,
-                    },
-                    tHeaderLabelCenter: {
-                        fontSize: 10,
-                        alignment: 'center',
-                        bold: true,
+                    fontSize: 7,
+                    alignment: 'right',
                     },
                     tHeaderValue: {
-                    fontSize: 10,
-                    alignment: 'left',
+                    fontSize: 7,
+                    bold: true,
                     },
-                    tHeaderValueCenter: {
-                        fontSize: 10,
-                        alignment: 'center',
-                        },
-                    tTextXS: {
-                        fontSize: 6,
-                        alignment: 'center',
+                    tProductsHeader: {
+                    fontSize: 7.5,
+                    bold: true,
                     },
-                    text: {
-                        fontSize: 8,
-                        alignment: 'left',
-                    },
-                    subrayado: {
-                        decoration: 'underline',
-                        decorationStyle: 'solid',
-                        decorationColor: 'black'
-                    },
-                    textRight: {
-                        alignment: 'right',
-                    },
-                    textCenter: {
-                        alignment: 'center',
+                    tProductsBody: {
+                    fontSize: 7,
                     },
                     tTotals: {
                     fontSize: 8,
@@ -87,7 +54,10 @@ const createPdf = async (props, output = 'print', target = '') => {
                     fontSize: 7,
                     bold: true,
                     },
-                    
+                    text: {
+                    fontSize: 7,
+                    alignment: 'center',
+                    },
                     link: {
                     fontSize: 7,
                     bold: true,
@@ -95,22 +65,15 @@ const createPdf = async (props, output = 'print', target = '') => {
                     alignment: 'center',
                     },
                 },
-                pageBreakBefore = function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
-                    return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
-                },
                 content,
-                
             } = props;
 
             const docDefinition = {
                 pageSize, //TAMAÑO HOJA
-                pageOrientation,
                 pageMargins, //MARGENES HOJA
                 info, //METADATA PDF
                 content, // CONTENIDO PDF
                 styles, //ESTILOS PDF
-                pageBreakBefore, // saltos de paginas
-                footer, //Numeracion de paginas
             };
 
             if(output === 'b64'){

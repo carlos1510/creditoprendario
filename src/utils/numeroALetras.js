@@ -21,6 +21,7 @@ export const numeroALetras = (cantidad, moneda) => {
                 numero = unidades(arreglo[0]);
                 break;
             case 2:
+                //error
                 numero = decenas(arreglo[0], arreglo[1]);
                 break;
             case 3:
@@ -107,10 +108,13 @@ const decenas = (decena, unidad) => {
             return decenas[decena - 1];
         }
         else if (unidad == 1) {
-            return veinte = "VEINTI" + "UNO ";
+            let veinte = "VEINTI" + "UNO ";
+            return veinte;
         }
         else {
-            return veinte = "VEINTI" + unidades(unidad);
+            //error
+            let veinte = "VEINTI" + unidades(unidad);
+            return veinte;
         }
     } else {
 

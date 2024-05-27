@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { Form, Link } from "react-router-dom";
+import { Await, Form, Link } from "react-router-dom";
+import {
+    TERipple,
+    TEModal,
+    TEModalDialog,
+    TEModalContent,
+    TEModalHeader,
+    TEModalBody,
+    TEModalFooter,
+  } from "tw-elements-react";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util';
@@ -11,6 +20,8 @@ import { getServicios } from '../../services/servicios';
 import { useTitle } from '../../components/Title/Title';
 import { obtenerAperturaCaja } from '../../services/caja';
 import ticket from '../../utils/ticket';
+import documento from '../../utils/documentPdf';
+import { getDetalleCreditoByIdCredito } from '../../services/detalleCredito';
 
 const initialValues = {
     id: 0,
@@ -44,11 +55,33 @@ const initialValues = {
     numerocredito: "",
     codigocredito: "",
     numerocontrato: "",
-    codigocontrato: ""
+    codigocontrato: "",
+    detalle: []
 };
+
+const camposTipoServicio = [
+    { item: 1, servicio_id: 1, label1: "KILATAJE", label2: "PESO BRUTO (gramo)", label3: "PESO NETO (gramo)" },
+    { item: 2, servicio_id: 2, label1: "MARCA", label2: "MODELO", label3: "PLACA" },
+    { item: 3, servicio_id: 3, label1: "MARCA", label2: "MODELO", label3: "SERIE" },
+];
+
+const initialValuesDetalle = {
+    id: 0,
+    servicio_id: 0,
+    credito_id: 0,
+    descripcion: "",
+    valor1: "",
+    valor2: "",
+    valor3: "",
+    observaciones: "",
+    valorizacion: ""
+}
 
 function Creditos(){
     useTitle('Creditos');
+    const [showModal, setShowModal] = React.useState(false);
+    const [showTipoServicio, setShowTipoServicio] = React.useState("");
+    const [titulosServicio, setTitulosServicio] = React.useState({});
     const [creditos, setCreditos] = React.useState([]);
     const [servicios, setServicios] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
@@ -60,6 +93,9 @@ function Creditos(){
     const [responsableId, setResponsableId] = React.useState("");
     const [nroDocumentoFiltro, setNroDocumentoFiltro] = React.useState("");
     const [estadoApertura, setEstadoApertura] = React.useState(-1);
+    const [detalleProducto, setDetalleProducto] = React.useState([]);
+    const [formDataDetalle, setFormDataDetalle] = React.useState(initialValuesDetalle);
+    const [montoTotal, setMontoTotal] = React.useState(0);
 
     const [fechaHoy, setFechaHoy] = React.useState({
         startDate: null,
@@ -130,6 +166,19 @@ function Creditos(){
                 referencia: resultados.referencia?resultados.referencia:"",
                 email: resultados.email?resultados.email:""});
 
+        }
+    }
+
+    const searchTitleService = (event) => {
+        setShowTipoServicio(event.target.value);
+        let idServicio = event.target.value;
+        if(idServicio !== ""){
+            const [servicio] = camposTipoServicio.filter(a =>
+                parseInt(a.servicio_id) === parseInt(idServicio)
+            )
+            setTitulosServicio(servicio);
+        }else{
+            setTitulosServicio({});
         }
     }
 
@@ -318,6 +367,879 @@ function Creditos(){
     };
     // fin para ticket
 
+    const onGenerateDocumento = async (output) => {
+        /*const content = [
+            {text: 'ANEXO 1', style: 'header', headlineLevel: 1},
+            {text: 'CONSTANCIA DE TASACIÓN, CARACTERISTICAS Y CONDICIONES DEL/LOS BIEN/ES DEPOSITADOS/S', style: 'header', margin: [55, 0, 55, 0], headlineLevel: 1},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                        { text: 'Agencia', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'PUCALLPA', style: 'tHeaderValue' },
+                        { text: 'Usuario', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                        ],
+                        [
+                        { text: 'Cliente', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                        { text: 'Fecha/Hora', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                            { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
+                            {},
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'Dirección', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
+                            { },
+                            { },
+                            { },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['60%', '15%', '5%', '20%'],
+                    body: [
+                        [
+                            { text: 'I) CONTRAPRESTACIÓN POR EL SERVICIO', style: 'tHeaderLabel' },
+                            { text: 'N° de Contrato', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '000000000001', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Importe', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'S/. 26.55', style: 'tHeaderValue' },
+                            { text: '(VEINTISEIS CON 55/100 SOLES)', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Fecha de Inicio', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/04/2024', style: 'tHeaderValue', colSpan: 2 },
+                            {  },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Fecha de Pago', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/05/2024', style: 'tHeaderValue', colSpan: 2 },
+                            {  },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Forma de Pago', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'Mensual', style: 'tHeaderValue' },
+                            {  text: 'En efectivo o mediante los canales de pago que Socio Efectivo autorice', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {text: 'VALORIZACIÓN TOTAL DE/LOS BIENES:',  style: 'tHeaderLabel', margin: [0, 35, 0, 0]},
+            {text: 'De común acuerdo entre las partes.',  style: 'tHeaderValue', margin: [0, 7, 0, 0]},
+            {text: 'II) DESCRIPCIÓN DEL/LOS BIEN/ES OBJETO DE CUSTODIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    body: [
+                        [
+                            { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'KILATAJE', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderLabelCenter' },
+                            { text: 'PESO NETO (gramo)', style: 'tHeaderLabelCenter' },
+                            { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        ],
+                    ],
+                },
+                
+            },
+            {
+                table: {
+                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    body: [
+                        [
+                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
+                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                        ],
+                    ],
+                },
+                
+            },
+            {text: 'III) PENALIDAD',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {text: 'Se cobrará una penalidad de 10 soles, solo en caso de que, el cliente solicite la entrega de el/los bien/es el mismo dia de la celebración del contrato y se cumpla con lo previsto en el mismo.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {text: 'IV) BENEFICIARIO DE LA GARANTIA MOBILIARIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha 12/04/2024.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {
+                margin: [0, 60, 0, 0],
+                table: {
+                    widths: ['50%', '50%'],
+                    body: [
+                        [
+                            { text: '_____________________', style: 'tHeaderLabelCenter' },
+                            { text: '_____________________', style: 'tHeaderLabelCenter' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 4, 0, 0],
+                table: {
+                    widths: ['50%', '50%'],
+                    body: [
+                        [
+                            { text: 'EL CLIENTE', style: 'tHeaderLabelCenter' },
+                            { text: 'LA DEPOSITARIA', style: 'tHeaderLabelCenter' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 4, 0, 0],
+                table: {
+                    widths: ['10%', '10%', '45%','35%'],
+                    body: [
+                        [
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: 'Nombre:', style: 'tHeaderValue' },
+                            { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                            { text: 'SOCIO EFECTIVO', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 2, 0, 0],
+                table: {
+                    widths: ['10%', '10%', '45%','35%'],
+                    body: [
+                        [
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: 'D.O.I:', style: 'tHeaderValue' },
+                            { text: '46902128', style: 'tHeaderValue' },
+                            { text: '', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            '_______________________________________________',
+            {
+                margin: [0, 0, 0, 0],
+                table: {
+                    widths: ['1%', '99%'],
+                    body: [
+                        [
+                            { text: '1', style: 'tTextXS' },
+                            { text: 'En caso el Beneficiario de la Garantía Mobiliaria disponga la liberación '+
+                                'anticipada del BIEN, el importe a cobrar será liquidado por los días efectivos de custodia.'
+                                , style: 'text' 
+                            },
+                        ],
+                        [
+                            { text: '2', style: 'tTextXS' },
+                            { text: 'Los canales de pago podrán ser en bancos o empresas del sistema financiero, así como '+
+                                'el uso de medios electrónicos, autorizados por Socio Efectivo. Los costos asociados al uso '+
+                                'de dichos medios de pago serán de cargo al CLIENTE.'
+                                , style: 'text' 
+                            },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 20, 0, 0],
+                table: {
+                    widths: ['15%', '30%', '30%','25%'],
+                    body: [
+                        [
+                            { text: 'N° de Contrato', style: 'tHeaderValue' },
+                            { text: '000000000000001', style: 'tHeaderValue' },
+                            { text: 'Fecha/Hora:', style: 'tHeaderValue' },
+                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Agencia:', style: 'tHeaderValue' },
+                            { text: 'PUCALLPA', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Usuario:', style: 'tHeaderValue' },
+                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            
+        ];*/
+
+        const content = [
+            {text: 'ANEXO 1', style: 'header', headlineLevel: 1},
+            {text: 'CONSTANCIA DE TASACIÓN, CARACTERISTICAS Y CONDICIONES DEL/LOS BIEN/ES DEPOSITADOS/S', style: 'header', margin: [55, 0, 55, 0], headlineLevel: 1},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                        { text: 'Agencia', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'PUCALLPA', style: 'tHeaderValue' },
+                        { text: 'Usuario', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                        ],
+                        [
+                        { text: 'Cliente', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                        { text: 'Fecha/Hora', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                            { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
+                            {},
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'Dirección', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
+                            { },
+                            { },
+                            { },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['60%', '15%', '5%', '20%'],
+                    body: [
+                        [
+                            { text: 'I) CONTRAPRESTACIÓN POR EL SERVICIO', style: 'tHeaderLabel' },
+                            { text: 'N° de Contrato', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '000000000001', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Importe', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'S/. 26.55', style: 'tHeaderValue' },
+                            { text: '(VEINTISEIS CON 55/100 SOLES)', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Fecha de Inicio', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/04/2024', style: 'tHeaderValue', colSpan: 2 },
+                            {  },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Fecha de Pago', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/05/2024', style: 'tHeaderValue', colSpan: 2 },
+                            {  },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['15%', '5%', '20%', '60%'],
+                    body: [
+                        [
+                            { text: 'Forma de Pago', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'Mensual', style: 'tHeaderValue' },
+                            {  text: 'En efectivo o mediante los canales de pago que Socio Efectivo autorice', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {text: 'VALORIZACIÓN TOTAL DE/LOS BIENES:',  style: 'tHeaderLabel', margin: [0, 35, 0, 0]},
+            {text: 'De común acuerdo entre las partes.',  style: 'tHeaderValue', margin: [0, 7, 0, 0]},
+            {text: 'II) DESCRIPCIÓN DEL/LOS BIEN/ES OBJETO DE CUSTODIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    body: [
+                        [
+                            { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'KILATAJE', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderLabelCenter' },
+                            { text: 'PESO NETO (gramo)', style: 'tHeaderLabelCenter' },
+                            { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                            { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        ],
+                        [
+                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
+                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                        ],
+                    ],
+                },
+                
+            },
+            {text: 'III) PENALIDAD',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {text: 'Se cobrará una penalidad de 10 soles, solo en caso de que, el cliente solicite la entrega de el/los bien/es el mismo dia de la celebración del contrato y se cumpla con lo previsto en el mismo.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {text: 'IV) BENEFICIARIO DE LA GARANTIA MOBILIARIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha 12/04/2024.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {
+                margin: [0, 60, 0, 0],
+                table: {
+                    widths: ['50%', '50%'],
+                    body: [
+                        [
+                            { text: '_____________________', style: 'tHeaderLabelCenter' },
+                            { text: '_____________________', style: 'tHeaderLabelCenter' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 4, 0, 0],
+                table: {
+                    widths: ['50%', '50%'],
+                    body: [
+                        [
+                            { text: 'EL CLIENTE', style: 'tHeaderLabelCenter' },
+                            { text: 'LA DEPOSITARIA', style: 'tHeaderLabelCenter' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 4, 0, 0],
+                table: {
+                    widths: ['10%', '10%', '45%','35%'],
+                    body: [
+                        [
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: 'Nombre:', style: 'tHeaderValue' },
+                            { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                            { text: 'SOCIO EFECTIVO', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 2, 0, 0],
+                table: {
+                    widths: ['10%', '10%', '45%','35%'],
+                    body: [
+                        [
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: 'D.O.I:', style: 'tHeaderValue' },
+                            { text: '46902128', style: 'tHeaderValue' },
+                            { text: '', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            '_______________________________________________',
+            {
+                margin: [0, 0, 0, 0],
+                table: {
+                    widths: ['1%', '99%'],
+                    body: [
+                        [
+                            { text: '1', style: 'tTextXS' },
+                            { text: 'En caso el Beneficiario de la Garantía Mobiliaria disponga la liberación '+
+                                'anticipada del BIEN, el importe a cobrar será liquidado por los días efectivos de custodia.'
+                                , style: 'text' 
+                            },
+                        ],
+                        [
+                            { text: '2', style: 'tTextXS' },
+                            { text: 'Los canales de pago podrán ser en bancos o empresas del sistema financiero, así como '+
+                                'el uso de medios electrónicos, autorizados por Socio Efectivo. Los costos asociados al uso '+
+                                'de dichos medios de pago serán de cargo al CLIENTE.'
+                                , style: 'text' 
+                            },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 20, 0, 0],
+                table: {
+                    widths: ['15%', '30%', '30%','25%'],
+                    body: [
+                        [
+                            { text: 'N° de Contrato', style: 'tHeaderValue' },
+                            { text: '000000000000001', style: 'tHeaderValue' },
+                            { text: 'Fecha/Hora:', style: 'tHeaderValue' },
+                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Agencia:', style: 'tHeaderValue' },
+                            { text: 'PUCALLPA', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Usuario:', style: 'tHeaderValue' },
+                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            //------------ ANEXO 2
+            {text: '', pageBreak: 'after'},
+            {text: 'HOJA RESUMEN - ANEXO 2', style: ['header','subrayado'], headlineLevel: 1},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                        { text: 'Agencia', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'PUCALLPA', style: 'tHeaderValue' },
+                        { text: 'Usuario', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                        ],
+                        [
+                        { text: 'Cliente', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                        { text: 'Fecha/Hora', style: 'tHeaderLabel' },
+                        { text: ':', style: 'tHeaderLabelCenter' },
+                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
+                    body: [
+                        [
+                            { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
+                            {},
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'Dirección', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
+                            { },
+                            { },
+                            { },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                canvas: [
+                    {
+                        type: 'line',
+                        x1: 0,
+                        y1: 5,
+                        x2: 535,
+                        y2: 5,
+                        lineWidth: 0.5
+                    }
+                ]
+            },
+            {
+                canvas: [
+                    {
+                        type: 'line',
+                        x1: 0,
+                        y1: 5,
+                        x2: 535,
+                        y2: 5,
+                        lineWidth: 0.5
+                    }
+                ]
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['60%', '17.7%', '5%', '16.3%'],
+                    body: [
+                        [
+                            { text: 'I) CONDICIONES GENERALES', style: 'tHeaderLabel' },
+                            { text: 'N° de Credito', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '000000000001', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 5, 0, 0],
+                table: {
+                    widths: ['19%', '5%', '23%', '30%','5%','18%'],
+                    body: [
+                        [
+                            { text: 'Tipo de Producto', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'CONSUMO JOYAS', style: 'tHeaderValue' },
+                            { text: 'Tasa de Costo Efectiva Anual', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '101.86%', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Moneda', style: 'tHeaderLabel' },
+                            { text: ' ', style: 'tHeaderLabelCenter' },
+                            { text: 'SOLES', style: 'tHeaderValue'},
+                            { text: 'Tasa de Interés moratorio', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '0%', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Tasa de interés', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '7%', style: 'tHeaderValue'},
+                            { text: 'nominal Anual (360 días). Aplica', style: 'tHeaderLabel' },
+                            { text: ' ', style: 'tHeaderLabelCenter' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Compensatorio Efectiva Menusal Fija', style: 'tHeaderLabel', colSpan: 2 },
+                            { },
+                            { text: ' ', style: 'tHeaderValue'},
+                            { text: 'solo en caso de incumplimiento', style: 'tHeaderLabel' },
+                            { text: ' ', style: 'tHeaderLabelCenter' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Tasa de interés', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '101.86%', style: 'tHeaderValue'},
+                            { text: 'Fecha del Desembolso', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/04/2024', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Compensatorio Efectiva Anual Fija (360 días)', style: 'tHeaderLabel', colSpan: 2 },
+                            { },
+                            { text: ' ', style: 'tHeaderValue'},
+                            { text: 'Plazo', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '30 días', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['18.7%', '5%', '76.3%'],
+                    body: [
+                        [
+                            { text: 'Monto del préstamo', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: 'S/. 300.00', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['18.7%', '5%', '76.3%'],
+                    body: [
+                        [
+                            { text: 'Fecha de Vencimiento', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '12/05/2024', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'ITF', style: 'tHeaderLabel' },
+                            { text: ':', style: 'tHeaderLabelCenter' },
+                            { text: '0.005%', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            {
+                margin: [0, 7, 0, 0],
+                table: {
+                    widths: ['40%', '15%', '15%', '15%','15%'],
+                    body: [
+                        [
+                            { text: '', style: 'tHeaderLabel' },
+                            { text: 'Capital', style: 'tHeaderLabel' },
+                            { text: 'Interés', style: 'tHeaderLabel'},
+                            { text: 'ITF', style: 'tHeaderLabel' },
+                            { text: 'Total', style: 'tHeaderLabel' },
+                        ],
+                        [
+                            { text: 'Pago Mínimo', style: 'tHeaderLabel' },
+                            { text: 'S/. 30.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. 18.08', style: ['tHeaderValue','textRight']},
+                            { text: 'S/. 0.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. 48.00', style: ['tHeaderValue','textRight'] },
+                        ],
+                        [
+                            { text: 'Pago Total', style: 'tHeaderLabel' },
+                            { text: 'S/. 300.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. 18.08', style: ['tHeaderValue','textRight']},
+                            { text: 'S/. 0.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. 348.00', style: ['tHeaderValue','textRight'] },
+                        ],
+                    ],
+                },
+            },
+            
+            {text: 'II) DATOS DEL DEPOSITARIO:',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['50%', '50%'],
+                    body: [
+                        [
+                            {
+                                margin: [0, 4, 0, 0],
+                                table: {
+                                    widths: ['100%'],
+                                    body: [
+                                        [
+                                            { text: 'Información del depositario del (los) bien(es) mueble(s) afecto(s) en garantia:', style: 'tHeaderValue' },
+                                        ],
+                                        [
+                                            { text: 'Nombre o razón social', style: 'tHeaderValue' },
+                                        ],
+                                        [
+                                            { text: 'DNI o RUC', style: 'tHeaderValue' },
+                                        ],
+                                        [
+                                            { text: 'Domicilio', style: 'tHeaderValue' },
+                                        ],
+                                    ],
+                                },
+                                layout: 'noBorders',
+                            },
+                            {
+                                margin: [0, 4, 0, 0],
+                                table: {
+                                    widths: ['100%'],
+                                    body: [
+                                        [ {  } ],
+                                        [ {  } ],
+                                        [ {  } ],
+                                        [ {  } ],
+                                    ],
+                                },
+                                layout: 'noBorders',
+                            },
+                        ],
+                    ],
+                },
+                
+            },
+            {text: 'III) DETALLES DE LA GARANTIA MOBILIARIA:',  style: 'tHeaderLabel', margin: [0, 10, 0, 0]},
+            {text: 'Empresa de Créditos Vica Oriente EIRL, ha recibido en garantia mobiliaria del préstamo indicado, el(los) bien(es) que a continuación se detalla(n):',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {
+                margin: [0,5,0,0],
+                table: {
+                    
+                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    body: [
+                        [
+                            { text: 'ITEM', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'DECRIPCION', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'KILATAJE', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'PESO NETO (gramo)', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'OBSERVACIONES', style: 'tHeaderValue', margin: [0,1,0,0] },
+                            { text: 'VALORIZACION', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                        ],
+                        [
+                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
+                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
+                        ],
+                    ],
+                },
+                
+            },
+            {
+                margin: [0, 80, 0, 0],
+                table: {
+                    widths: ['15%', '35%', '15%','35%'],
+                    body: [
+                        [
+                            { text: 'N° de Crédito', style: 'tHeaderLabel' },
+                            { text: '000000000000001', style: 'tHeaderValue' },
+                            { text: 'Fecha/Hora:', style: 'tHeaderLabel' },
+                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Agencia:', style: 'tHeaderLabel' },
+                            { text: 'PUCALLPA', style: 'tHeaderValue' },
+                            { text: 'Contrato: ', style: 'tHeaderLabel' },
+                            { text: 'Resolución SBS N° 03518-2022', style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'Usuario:', style: 'tHeaderLabel' },
+                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                            { text: ' ', style: 'tHeaderValue' },
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            
+        ];
+
+         const response = await documento(output, '', content);
+    }
+
     async function confirmCreatedCredito(){
         try{
             const response = await createdCredito(formData);
@@ -326,11 +1248,13 @@ function Creditos(){
             
             setRegister(!register);
             setFormData(initialValues);
+            setFormDataDetalle(initialValuesDetalle);
+            setDetalleProducto([]);
             setEstadoRegistro(false);
             Swal.fire({
                 icon: "success", 
                 title: "Exito!", 
-                html: `<p>Se <strong>Actualizó</strong> Correctamente los datos</p>`,
+                html: `<p>Se <strong>Registro</strong> Correctamente los datos</p>`,
                 timer: 3000,
                 position: "center"
             });
@@ -387,42 +1311,30 @@ function Creditos(){
     }
 
     function handlerCalcularFechaLimite(event, tipo) {
-        
         let fechaObtenido = "";
         let idServicio = 0;
-        let monto_ingresado = 0;
-        let interes_calculado = 0;
-        let total_monto = 0;
 
         if(tipo === 1){
-            idServicio = event.target.value;
-            fechaObtenido = fechaHoy.startDate;
-            monto_ingresado = formData.monto;
+            idServicio = formData.servicio_id;
+            fechaObtenido = event.startDate;
         }else{
             if(tipo === 2){
-                idServicio = formData.servicio_id;
-                fechaObtenido = event.startDate;
-                monto_ingresado = formData.monto;
-            }else{
-                if(tipo === 3){
-                    idServicio = formData.servicio_id;
-                    fechaObtenido = fechaHoy.startDate;
-                    monto_ingresado = event.target.value;
-                }
+                idServicio = event.target.value;
+                fechaObtenido = fechaHoy.startDate;
             }
         }
 
-        if( !isNaN( parseFloat(monto_ingresado)) && !isNaN(parseInt(idServicio))){
+        if( !isNaN(parseInt(idServicio))){
             const [servicio] = servicios.filter(a =>
                 parseInt(a.id) === parseInt(idServicio)
             )
     
-            calcularFechaLimite(fechaObtenido, servicio.periodo, servicio.numeroperiodo, monto_ingresado, servicio.id);
+            calcularFechaLimite(fechaObtenido, servicio.periodo, servicio.numeroperiodo, servicio.id);
         }
         
     }
 
-    function calcularFechaLimite(fechaObtenido,periodo, numero, monto, servicio_id){
+    function calcularFechaLimite(fechaObtenido,periodo, numero, servicio_id){
         let fecha = new Date(fechaObtenido);
         let fechagenerado = "";
         if(periodo === 'DIAS'){
@@ -437,7 +1349,7 @@ function Creditos(){
             fechagenerado = ('0'+fecha.getDate()).toString().substr(-2)+'/'+('0'+(fecha.getMonth()+1)).toString().substr(-2)+'/'+fecha.getFullYear();
         }
 
-        setFormData({...formData, fecha: fechaObtenido, fechalimite: fechagenerado, servicio_id: servicio_id, total_texto: numeroALetras(monto, 'SOLES')});
+        setFormData({...formData, fecha: fechaObtenido, fechalimite: fechagenerado, servicio_id: servicio_id});
         
     }
 
@@ -459,9 +1371,83 @@ function Creditos(){
         setFormData({...formData, numerocredito: resultado.numerocredito, codigocredito: resultado.codigocredito, numerocontrato: resultado.numerocontrato, codigocontrato: resultado.codigocontrato});
     }
 
+    async function obtenerDetalleCredito(datos){
+        const [resultado] = await Promise.all([getDetalleCreditoByIdCredito(datos.id)]);
+
+        setFormData({
+            id: datos.id,
+            fecha: datos.fecha,
+            fechalimite: formatoFecha(datos.fechalimite),
+            seriecorrelativo: datos.seriecorrelativo,
+            numerocorrelativo: datos.numerocorrelativo,
+            codigogenerado: datos.codigogenerado,
+            tipomoneda: datos.tipomoneda,
+            descripcion_bien: datos.descripcion_bien,
+            monto: datos.monto,
+            interes: datos.interes,
+            subtotal: datos.subtotal,
+            total: datos.total,
+            total_texto: datos.total_texto,
+            descuento: datos.descuento,
+            montoactual: datos.montoactual,
+            tipo_comprobante_id: datos.tipo_comprobante_id,
+            servicio_id: datos.servicio_id,
+            tipodocumento: datos.tipodocumento,
+            numerodocumento: datos.numerodocumento,
+            nombrescliente: datos.nombrescliente,
+            direccion: datos.direccion?datos.direccion:'',
+            referencia: datos.referencia?datos.referencia:'',
+            telefono1: datos.telefono1?datos.telefono1:'',
+            telefono2: datos.telefono2?datos.telefono2:'',
+            email: datos.email?datos.email:'',
+            numerocredito: datos.numerocredito,
+            codigocredito: datos.codigocredito,
+            numerocontrato: datos.numerocontrato,
+            codigocontrato: datos.codigocontrato,
+            cliente_id: datos.cliente_id?datos.cliente_id:null,
+            detalle: resultado
+        });
+
+        setDetalleProducto(resultado);
+
+        setFechaHoy({startDate: datos.fecha, endDate: datos.fecha});
+    }
+
     function handleChange(event){
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
+    }
+
+    function handleChangeDetalle(event){
+        const { name, value } = event.target;
+        setFormDataDetalle({ ...formDataDetalle, [name]: value });
+    }
+
+    const handleSubmitProducto = (event) => {
+        event.preventDefault();
+        let item = detalleProducto.length + 1;
+        
+        setDetalleProducto([...detalleProducto, { item: item, descripcion: formDataDetalle.descripcion, valor1: formDataDetalle.valor1, valor2: formDataDetalle.valor2, valor3: formDataDetalle.valor3, observaciones: formDataDetalle.observaciones, valorizacion: formDataDetalle.valorizacion}]);
+        
+        setFormData({...formData, detalle: [...detalleProducto, { item: item, descripcion: formDataDetalle.descripcion, valor1: formDataDetalle.valor1, valor2: formDataDetalle.valor2, valor3: formDataDetalle.valor3, observaciones: formDataDetalle.observaciones, valorizacion: formDataDetalle.valorizacion}], monto: montoTotal, total_texto: numeroALetras(parseFloat(montoTotal), 'SOLES')});
+
+        setFormDataDetalle(initialValuesDetalle);
+        setShowModal(false);
+        
+    }
+
+    const calcularMontoTotal = (event) => {
+        let monto = parseFloat(formDataDetalle.valorizacion);
+        setMontoTotal(parseFloat(montoTotal) + monto);
+    }
+
+    const handleDeleteProducto = (item) => {
+        setDetalleProducto(detalleProducto.filter((value) => value.item !== item.item));
+
+        let montocal = parseFloat(montoTotal) - parseFloat(item.valorizacion);
+        setMontoTotal(montocal);
+        setFormData({...formData, detalle: detalleProducto.filter((value) => value.item !== item.item), monto: montocal, total_texto: numeroALetras(montocal, 'SOLES')});
+        console.log(formData);
     }
 
     const handleSubmit = (event) => {
@@ -480,41 +1466,7 @@ function Creditos(){
         setEstadoRegistro(estado);
         setRegister(!register);
         if(datos){
-            setFormData({
-                id: datos.id,
-                fecha: datos.fecha,
-                fechalimite: formatoFecha(datos.fechalimite),
-                seriecorrelativo: datos.seriecorrelativo,
-                numerocorrelativo: datos.numerocorrelativo,
-                codigogenerado: datos.codigogenerado,
-                tipomoneda: datos.tipomoneda,
-                descripcion_bien: datos.descripcion_bien,
-                monto: datos.monto,
-                interes: datos.interes,
-                subtotal: datos.subtotal,
-                total: datos.total,
-                total_texto: datos.total_texto,
-                descuento: datos.descuento,
-                montoactual: datos.montoactual,
-                tipo_comprobante_id: datos.tipo_comprobante_id,
-                servicio_id: datos.servicio_id,
-                tipodocumento: datos.tipodocumento,
-                numerodocumento: datos.numerodocumento,
-                nombrescliente: datos.nombrescliente,
-                direccion: datos.direccion?datos.direccion:'',
-                referencia: datos.referencia?datos.referencia:'',
-                telefono1: datos.telefono1?datos.telefono1:'',
-                telefono2: datos.telefono2?datos.telefono2:'',
-                email: datos.email?datos.email:'',
-                numerocredito: datos.numerocredito,
-                codigocredito: datos.codigocredito,
-                numerocontrato: datos.numerocontrato,
-                codigocontrato: datos.codigocontrato,
-                cliente_id: datos.cliente_id?datos.cliente_id:null 
-            });
-
-            setFechaHoy({startDate: datos.fecha, endDate: datos.fecha});
-
+            obtenerDetalleCredito(datos);
         }else{
             let date = new Date();
         
@@ -576,13 +1528,149 @@ function Creditos(){
                     </div>
                 ):""           
             }
+
+            <TEModal show={showModal} setShow={setShowModal}>
+                <TEModalDialog size="lg">
+                <TEModalContent>
+                    <TEModalHeader>
+                        <h5 className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200">
+                            Datos del Producto
+                        </h5>
+                        <button
+                            type="button"
+                            className="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                            onClick={() => setShowModal(false)}
+                            aria-label="Close"
+                        >
+                            <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="h-6 w-6"
+                            >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                            </svg>
+                        </button>
+                    </TEModalHeader>
+                    <TEModalBody>
+                        <form className='mx-auto' >
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="descripcionModalTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">DESCRIPCION <span className='text-red-600'>*</span></label>
+                                    <input type="text" 
+                                        id="descripcionModalTxt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='descripcion'
+                                        value={formDataDetalle.descripcion}
+                                        onChange={handleChangeDetalle}
+                                        required
+                                        
+                                    />
+                                </div>
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="valor1Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{titulosServicio.label1} <span className='text-red-600'>*</span></label>
+                                    <input type="text" 
+                                        id="valor1Txt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='valor1'
+                                        value={formDataDetalle.valor1}
+                                        onChange={handleChangeDetalle}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="valor2Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{titulosServicio.label2} <span className='text-red-600'>*</span></label>
+                                    <input type="text" 
+                                        id="valor2Txt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='valor2'
+                                        value={formDataDetalle.valor2}
+                                        onChange={handleChangeDetalle}
+                                        required
+                                    />
+                                </div>
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="valor3Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{titulosServicio.label3} <span className='text-red-600'>*</span></label>
+                                    <input type="text" 
+                                        id="valor3Txt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='valor3'
+                                        value={formDataDetalle.valor3}
+                                        onChange={handleChangeDetalle}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="observacionesTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">OBSERVACIONES <span className='text-red-600'>*</span></label>
+                                    <input type="text" 
+                                        id="observacionesTxt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='observaciones'
+                                        value={formDataDetalle.observaciones}
+                                        onChange={handleChangeDetalle}
+                                        required
+                                    />
+                                </div>
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="valorizacionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">VALORIZACION <span className='text-red-600'>*</span></label>
+                                    <input type="number" 
+                                        id="valorizacionTxt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='valorizacion'
+                                        value={formDataDetalle.valorizacion}
+                                        onChange={handleChangeDetalle}
+                                        onBlur={(event) => calcularMontoTotal(event)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    </TEModalBody>
+                    <TEModalFooter>
+                        <TERipple rippleColor="light">
+                            <button
+                                type="button"
+                                className="inline-block rounded bg-red-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-red-600 focus:bg-red-600 focus:outline-none focus:ring-0 active:bg-red-500"
+                                onClick={() => setShowModal(false)}
+                                >
+                                Cancelar
+                            </button>
+                        </TERipple>
+                        <TERipple rippleColor="light">
+                            <button
+                                type="button"
+                                className="ml-1 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                    onClick={handleSubmitProducto}
+                                >
+                                Agregar
+                            </button>
+                        </TERipple>
+                    </TEModalFooter>
+                </TEModalContent>
+                </TEModalDialog>
+            </TEModal>
+            <div className="text-left ">
+                                <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> onGenerateDocumento('print')}>
+                                    <i className="fas fa-plus-circle"></i> imprimir documento
+                                </button>
+            </div>
             
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
                     <h2 className="text-gray-500 text-center text-lg font-semibold pb-4">{estadoRegistro?'EDITAR': 'NUEVO'} CREDITO</h2>
                     <div className="my-1"></div> 
                     <div className="bg-gradient-to-r from-cyan-300 to-cyan-500 h-px mb-6"></div> 
-                    <form className="max-w-screen-lg mx-auto" onSubmit={handleSubmit}>
+                    <form className=" mx-auto" onSubmit={handleSubmit}>
                         {
                             estadoRegistro && (
                                 <input type="hidden" name="id" value={formData.id} />
@@ -754,14 +1842,14 @@ function Creditos(){
                             />
                         </div>
                         
-                        <div className="grid md:grid-cols-2 md:gap-6">
+                        <div className="grid md:grid-cols-1 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="servicio_idCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Servicio <span className='text-red-600'>*</span></label>
+                                <label htmlFor="servicio_idCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Producto/Servicio <span className='text-red-600'>*</span></label>
                                 <select id="servicio_idCmb" 
                                     className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='servicio_id'
                                     value={formData.servicio_id}
-                                    onChange={(event) => {handleChange(event); handlerCalcularFechaLimite(event, 2);}}
+                                    onChange={(event) => {handleChange(event); searchTitleService(event); handlerCalcularFechaLimite(event, 2);}}
                                     required 
                                 >
                                     <option value="">---</option>
@@ -770,24 +1858,59 @@ function Creditos(){
                                             <option key={servicio.id} value={servicio.id}>{servicio.tiposervicio}</option>
                                         ))
                                     }
-                                    
-                                    
                                 </select>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="descripcion_bienTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Detalle del Bien/Producto <span className='text-red-600'>*</span></label>
-                                <input type="text" 
-                                    id="descripcion_bienTxt" 
-                                    className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                    name='descripcion_bien'
-                                    value={formData.descripcion_bien}
-                                    onChange={handleChange}
-                                    required 
-                                />
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-3 md:gap-6">
+                        <div className="flex flex-col">
+                            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                                    <div className="overflow-hidden">
+                                        <table className="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                            <thead className="border-b font-medium dark:border-neutral-500">
+                                                <tr>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">ITEM</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">DESCRIPCION</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label1}</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label2}</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label3}</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">OBSERVACIONES</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">VALORIZACION</th>
+                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">
+                                                        {
+                                                            showTipoServicio!==""?(
+                                                                <button type='button' className="bg-cyan-600 hover:bg-cyan-800 text-white font-semibold py-1.5 px-4 rounded" title='Nuevo Item' onClick={() => setShowModal(true)}><i className="fas fa-plus-circle"></i></button>
+                                                            ):""
+                                                        }
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    detalleProducto?.map((detalle, index) => (
+                                                        <tr className="border-b dark:border-neutral-500" key={index}>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{index + 1}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.descripcion}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor1}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor2}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor3}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.observaciones}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valorizacion}</td>
+                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">
+                                                                <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDeleteProducto(detalle)}><i className="fas fa-trash-alt"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 md:gap-6 pt-3">
                             <div className="relative z-0 w-full mb-5 group">
                                 <label htmlFor="tipomonedaCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Tipo de Moneda <span className='text-red-600'>*</span></label>
                                 <select id="tipomonedaCmb" 
@@ -810,7 +1933,6 @@ function Creditos(){
                                     name='monto'
                                     value={formData.monto}
                                     onChange={handleChange}
-                                    onBlur={(event) => handlerCalcularFechaLimite(event, 3)}
                                     required 
                                 />
                             </div>
@@ -857,7 +1979,7 @@ function Creditos(){
                         estadoApertura===0?(
                             <div className="text-right ">
                                 <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, null)}>
-                                    <i className="fas fa-plus-circle"></i> Agregar
+                                    <i className="fas fa-plus-circle"></i> NUEVO CREDITO
                                 </button>
                             </div>
                         ):("")
@@ -950,7 +2072,6 @@ function Creditos(){
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Nro. Credito</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. Contrato</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">TIPO DE SERVICIO</th>
-                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">DESCRIPCION</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NRO. DOC. CLIENTE</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">NOMBRES CLIENTE</th>
@@ -968,7 +2089,6 @@ function Creditos(){
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.nombre_comprobante}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.codigogenerado}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.tiposervicio}</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">{credito.descripcion_bien}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{formatoFecha(credito.fecha)}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.numerodocumento}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.nombrescliente}</td>
