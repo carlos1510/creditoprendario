@@ -194,7 +194,6 @@ function Creditos(){
     const [message, setMessage] = React.useState('');
 
     const onGenerateTicket = async (output, data) => {
-        console.log(data.pago);
         setBase64('');
         setMessage('');
 
@@ -785,7 +784,7 @@ function Creditos(){
                             { text: '101.86%', style: 'tHeaderValue'},
                             { text: 'Fecha del Desembolso', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/04/2024', style: 'tHeaderValue' },
+                            { text: '' + formatoFecha(data.pago.fecha), style: 'tHeaderValue' },
                         ],
                         [
                             { text: 'Compensatorio Efectiva Anual Fija (360 días)', style: 'tHeaderLabel', colSpan: 2 },
@@ -989,6 +988,8 @@ function Creditos(){
             setRegister(!register);
             setFormData(initialValues);
             setEstadoRegistro(false);
+            setFormDataDetalle(initialValuesDetalle);
+            setDetalleProducto([]);
             Swal.fire({
                 icon: "success", 
                 title: "Exito!", 
@@ -1122,6 +1123,7 @@ function Creditos(){
         });
 
         setDetalleProducto(resultado);
+        setShowTipoServicio(datos.servicio_id);
 
         setFechaHoy({startDate: datos.fecha, endDate: datos.fecha});
     }
@@ -1151,7 +1153,10 @@ function Creditos(){
 
     const calcularMontoTotal = (event) => {
         let monto = parseFloat(formDataDetalle.valorizacion);
-        setMontoTotal(parseFloat(montoTotal) + monto);
+        let total = 0;
+        detalleProducto.forEach(function(a){total += parseFloat(a.valorizacion);});
+        setMontoTotal(monto + total);
+        //const resultado = detalleProducto.map((res) => { return res.valorizacion});
     }
 
     const handleDeleteProducto = (item) => {
@@ -1160,7 +1165,6 @@ function Creditos(){
         let montocal = parseFloat(montoTotal) - parseFloat(item.valorizacion);
         setMontoTotal(montocal);
         setFormData({...formData, detalle: detalleProducto.filter((value) => value.item !== item.item), monto: montocal, total_texto: numeroALetras(montocal, 'SOLES')});
-        console.log(formData);
     }
 
     const handleSubmit = (event) => {
@@ -1175,12 +1179,24 @@ function Creditos(){
         }  
     }
 
+    const handlerClearData = () => {
+        setFormData(initialValues);
+        setFormDataDetalle(initialValuesDetalle);
+        setDetalleProducto([]);
+        setShowTipoServicio("");
+    }
+
     const handleNewEdit = (estado, datos) => {
         setEstadoRegistro(estado);
         setRegister(!register);
+        
         if(datos){
             obtenerDetalleCredito(datos);
         }else{
+            
+            setFormDataDetalle(initialValuesDetalle);
+            setDetalleProducto([]);
+            setShowTipoServicio("");
             let date = new Date();
         
             let fechaActual = date.getFullYear() + "-" + ('0'+(date.getMonth() + 1)).toString().substr(-2) + "-" +('0'+date.getDate()).toString().substr(-2);
@@ -1676,7 +1692,7 @@ function Creditos(){
                             <i className='fas fa-save'></i> Guardar
                         </button>
                         <button type="button" className="text-white bg-red-700 mt-2 mr-1 ml-1 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
-                        onClick={()=> setRegister(!register)}>
+                        onClick={()=> {setRegister(!register); handlerClearData();}}>
                             <i className='fas fa-times'></i> Salir
                         </button>
                     </form>
