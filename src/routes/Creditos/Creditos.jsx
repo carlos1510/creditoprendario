@@ -186,6 +186,7 @@ function Creditos(){
         const [resultados] = await Promise.all([getImprimirTicketCredito(id)]);
         
         onGenerateTicket('print', resultados);
+        onGenerateDocumento('print', resultados);
     }
 
     //INICIO PARA TICKET
@@ -193,20 +194,21 @@ function Creditos(){
     const [message, setMessage] = React.useState('');
 
     const onGenerateTicket = async (output, data) => {
+        console.log(data.pago);
         setBase64('');
         setMessage('');
 
         const content = [
-            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '' + data.pago.nombrenegocio?data.pago.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
-            { text: '' + data.nombre_empresa, style: 'text' },
-            { text: '' + data.direccion_empresa, style: 'text' },
-            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
+            { text: '' + data.pago.nombre_empresa, style: 'text' },
+            { text: '' + data.pago.direccion_empresa, style: 'text' },
+            { text: '' + data.pago.descripcion_tipo_doc_empresa + ': ' + data.pago.nrodoc_empresa, style: 'text' },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
 
             //TIPO Y NUMERO DOCUMENTO
-            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 5, 0, 2.25] },
-            { text: '' + data.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
+            { text: '' + data.pago.nom_tipo_comprobante, style: 'header', margin: [0, 5, 0, 2.25] },
+            { text: '' + data.pago.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
 
             //DATOS CEBECERA FACTURAR
@@ -217,43 +219,43 @@ function Creditos(){
                     body: [
                         [
                         { text: 'FECHA:', style: 'tHeaderLabel' },
-                        { text: '' + formatoFecha(data.fecha), style: 'tHeaderValue' },
+                        { text: '' + formatoFecha(data.pago.fecha), style: 'tHeaderValue' },
                         { text: 'HORA:', style: 'tHeaderLabel' },
-                        { text: '' + data.hora, style: 'tHeaderValue' },
+                        { text: '' + data.pago.hora, style: 'tHeaderValue' },
                         ],
                         [
                         { text: 'CLIENTE:', style: 'tHeaderLabel' },
-                        { text: '' + data.nombrescliente, style: 'tHeaderValue', colSpan: 3 },
+                        { text: '' + data.pago.nombrescliente, style: 'tHeaderValue', colSpan: 3 },
                         {},
                         {},
                         ],
                         [
                         { text: 'DNI:', style: 'tHeaderLabel' },
-                        { text: '' + data.nrodoc_cliente, style: 'tHeaderValue', colSpan: 3 },
+                        { text: '' + data.pago.nrodoc_cliente, style: 'tHeaderValue', colSpan: 3 },
                         {},
                         {},
                         ],
                         [
                         { text: 'CAJERO:', style: 'tHeaderLabel' },
-                        { text: '' + data.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
+                        { text: '' + data.pago.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
                         {},
                         {},
                         ],
                         [
                             { text: 'FECHA LIMITE:', style: 'tTotals', alignment: 'left', colSpan: 2, margin: [10, 6, 0, 0] },
                             {},
-                            { text: '' + formatoFecha(data.fechalimite), style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 6, 0, 0] },
+                            { text: '' + formatoFecha(data.pago.fechalimite), style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 6, 0, 0] },
                             {},
                         ],
                         [
                             {text: 'PLAZO:', style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [10, 0, 0, 0]},
                             {},
-                            {text: '' + data.plazo, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
+                            {text: '' + data.pago.plazo, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
                         ],
                         [
                             {text: 'N° CREDITO:', style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [10, 0, 0, 0]},
                             {},
-                            {text: '' + data.codigocredito, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
+                            {text: '' + data.pago.codigocredito, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 0, 0, 0]}
                         ],
                     ],
                 },
@@ -278,34 +280,12 @@ function Creditos(){
                                 {},
                             ],
                             [
-                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
+                                { text: '' + data.pago.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
                                 {},
                                 {},
                                 {},
                             ],
-                            [
-                                {
-                                    text: 'DESCRIPCION: ',
-                                    style: 'tTotals',
-                                    alignment: 'left',
-                                    colSpan: 4,
-                                    margin: [5, 6, 0, 0],
-                                },
-                                {},
-                                {},
-                                {},
-                            ],
-                            [
-                                {
-                                    text: '' + data.descripcion_bien,
-                                    style: 'tProductsBody',
-                                    colSpan: 4,
-                                    margin: [5, 0, 0, 0],
-                                },
-                                {},
-                                {},
-                                {},
-                            ],
+                            
                         ],
                 },
                 layout: 'noBorders',
@@ -320,13 +300,13 @@ function Creditos(){
                       { text: 'PRESTAMO', style: 'tTotals', alignment: 'left',colSpan: 2, margin: [5, 0, 0, 0], },
                       {},
                       {text: 'S/:', alignment: 'left', style: 'tTotals'},
-                      { text: '' + (data.monto).toFixed(2), alignment: 'left',style: 'tTotals' },
+                      { text: '' + (data.pago.monto).toFixed(2), alignment: 'left',style: 'tTotals' },
                       
                     ],
                     //TOTAL IMPORTE EN LETRAS
                     [
                       {
-                        text: 'SON: ' + numeroALetras((data.monto).toFixed(2), 'SOLES'),
+                        text: 'SON: ' + numeroALetras((data.pago.monto).toFixed(2), 'SOLES'),
                         style: 'tProductsBody',
                         colSpan: 4,
                         margin: [10, 4, 0, 0],
@@ -367,287 +347,57 @@ function Creditos(){
     };
     // fin para ticket
 
-    const onGenerateDocumento = async (output) => {
-        /*const content = [
-            {text: 'ANEXO 1', style: 'header', headlineLevel: 1},
-            {text: 'CONSTANCIA DE TASACIÓN, CARACTERISTICAS Y CONDICIONES DEL/LOS BIEN/ES DEPOSITADOS/S', style: 'header', margin: [55, 0, 55, 0], headlineLevel: 1},
-            {
-                margin: [0, 10, 0, 0],
-                table: {
-                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
-                    body: [
-                        [
-                        { text: 'Agencia', style: 'tHeaderLabel' },
-                        { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'PUCALLPA', style: 'tHeaderValue' },
-                        { text: 'Usuario', style: 'tHeaderLabel' },
-                        { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
-                        ],
-                        [
-                        { text: 'Cliente', style: 'tHeaderLabel' },
-                        { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
-                        { text: 'Fecha/Hora', style: 'tHeaderLabel' },
-                        { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 5, 0, 0],
-                table: {
-                    widths: ['12%', '5%', '46%', '12%', '5%', '20%'],
-                    body: [
-                        [
-                            { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
-                            {},
-                            {},
-                            {},
-                        ],
-                        [
-                            { text: 'Dirección', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
-                            { },
-                            { },
-                            { },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 5, 0, 0],
-                table: {
-                    widths: ['60%', '15%', '5%', '20%'],
-                    body: [
-                        [
-                            { text: 'I) CONTRAPRESTACIÓN POR EL SERVICIO', style: 'tHeaderLabel' },
-                            { text: 'N° de Contrato', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '000000000001', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 5, 0, 0],
-                table: {
-                    widths: ['15%', '5%', '20%', '60%'],
-                    body: [
-                        [
-                            { text: 'Importe', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'S/. 26.55', style: 'tHeaderValue' },
-                            { text: '(VEINTISEIS CON 55/100 SOLES)', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 7, 0, 0],
-                table: {
-                    widths: ['15%', '5%', '20%', '60%'],
-                    body: [
-                        [
-                            { text: 'Fecha de Inicio', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/04/2024', style: 'tHeaderValue', colSpan: 2 },
-                            {  },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 7, 0, 0],
-                table: {
-                    widths: ['15%', '5%', '20%', '60%'],
-                    body: [
-                        [
-                            { text: 'Fecha de Pago', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/05/2024', style: 'tHeaderValue', colSpan: 2 },
-                            {  },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 7, 0, 0],
-                table: {
-                    widths: ['15%', '5%', '20%', '60%'],
-                    body: [
-                        [
-                            { text: 'Forma de Pago', style: 'tHeaderLabel' },
-                            { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'Mensual', style: 'tHeaderValue' },
-                            {  text: 'En efectivo o mediante los canales de pago que Socio Efectivo autorice', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {text: 'VALORIZACIÓN TOTAL DE/LOS BIENES:',  style: 'tHeaderLabel', margin: [0, 35, 0, 0]},
-            {text: 'De común acuerdo entre las partes.',  style: 'tHeaderValue', margin: [0, 7, 0, 0]},
-            {text: 'II) DESCRIPCIÓN DEL/LOS BIEN/ES OBJETO DE CUSTODIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
-            {
-                margin: [0, 10, 0, 0],
-                table: {
-                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
-                    body: [
-                        [
-                            { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'KILATAJE', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderLabelCenter' },
-                            { text: 'PESO NETO (gramo)', style: 'tHeaderLabelCenter' },
-                            { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                        ],
-                    ],
-                },
+    const onGenerateDocumento = async (output, data) => {
+
+        const [servicio] = camposTipoServicio.filter(a =>
+            parseInt(a.servicio_id) === parseInt(data.pago.servicio_id)
+        )
+        const detalle = new Array();
+        const detalle2 = new Array();
+        let j = 0;
+        for(let i = 0; i < data.detalles.length; i++){
+            if(i === 0){
                 
-            },
-            {
-                table: {
-                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
-                    body: [
-                        [
-                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
-                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                        ],
-                    ],
-                },
-                
-            },
-            {text: 'III) PENALIDAD',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
-            {text: 'Se cobrará una penalidad de 10 soles, solo en caso de que, el cliente solicite la entrega de el/los bien/es el mismo dia de la celebración del contrato y se cumpla con lo previsto en el mismo.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
-            {text: 'IV) BENEFICIARIO DE LA GARANTIA MOBILIARIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
-            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha 12/04/2024.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
-            {
-                margin: [0, 60, 0, 0],
-                table: {
-                    widths: ['50%', '50%'],
-                    body: [
-                        [
-                            { text: '_____________________', style: 'tHeaderLabelCenter' },
-                            { text: '_____________________', style: 'tHeaderLabelCenter' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 4, 0, 0],
-                table: {
-                    widths: ['50%', '50%'],
-                    body: [
-                        [
-                            { text: 'EL CLIENTE', style: 'tHeaderLabelCenter' },
-                            { text: 'LA DEPOSITARIA', style: 'tHeaderLabelCenter' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 4, 0, 0],
-                table: {
-                    widths: ['10%', '10%', '45%','35%'],
-                    body: [
-                        [
-                            { text: ' ', style: 'tHeaderValue' },
-                            { text: 'Nombre:', style: 'tHeaderValue' },
-                            { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
-                            { text: 'SOCIO EFECTIVO', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 2, 0, 0],
-                table: {
-                    widths: ['10%', '10%', '45%','35%'],
-                    body: [
-                        [
-                            { text: ' ', style: 'tHeaderValue' },
-                            { text: 'D.O.I:', style: 'tHeaderValue' },
-                            { text: '46902128', style: 'tHeaderValue' },
-                            { text: '', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            '_______________________________________________',
-            {
-                margin: [0, 0, 0, 0],
-                table: {
-                    widths: ['1%', '99%'],
-                    body: [
-                        [
-                            { text: '1', style: 'tTextXS' },
-                            { text: 'En caso el Beneficiario de la Garantía Mobiliaria disponga la liberación '+
-                                'anticipada del BIEN, el importe a cobrar será liquidado por los días efectivos de custodia.'
-                                , style: 'text' 
-                            },
-                        ],
-                        [
-                            { text: '2', style: 'tTextXS' },
-                            { text: 'Los canales de pago podrán ser en bancos o empresas del sistema financiero, así como '+
-                                'el uso de medios electrónicos, autorizados por Socio Efectivo. Los costos asociados al uso '+
-                                'de dichos medios de pago serán de cargo al CLIENTE.'
-                                , style: 'text' 
-                            },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
-            {
-                margin: [0, 20, 0, 0],
-                table: {
-                    widths: ['15%', '30%', '30%','25%'],
-                    body: [
-                        [
-                            { text: 'N° de Contrato', style: 'tHeaderValue' },
-                            { text: '000000000000001', style: 'tHeaderValue' },
-                            { text: 'Fecha/Hora:', style: 'tHeaderValue' },
-                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
-                        ],
-                        [
-                            { text: 'Agencia:', style: 'tHeaderValue' },
-                            { text: 'PUCALLPA', style: 'tHeaderValue' },
-                            { text: ' ', style: 'tHeaderValue' },
-                            { text: ' ', style: 'tHeaderValue' },
-                        ],
-                        [
-                            { text: 'Usuario:', style: 'tHeaderValue' },
-                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
-                            { text: ' ', style: 'tHeaderValue' },
-                            { text: ' ', style: 'tHeaderValue' },
-                        ],
-                    ],
-                },
-                layout: 'noBorders',
-            },
+                detalle[j] = [
+                    { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
+                    { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
+                    { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                ];
+                detalle2[j] = [
+                    { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
+                    { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
+                    { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                ];
+            }
+            detalle[j+1]= [
+                {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
+            ];
+            detalle2[j+1]= [
+                {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
+            ];
+            j++;
             
-        ];*/
+        }
 
         const content = [
             {text: 'ANEXO 1', style: 'header', headlineLevel: 1},
@@ -663,15 +413,15 @@ function Creditos(){
                         { text: 'PUCALLPA', style: 'tHeaderValue' },
                         { text: 'Usuario', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                        { text: '' + data.pago.nombres_cajero, style: 'tHeaderValue' },
                         ],
                         [
                         { text: 'Cliente', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                        { text: '' + data.pago.nombrescliente, style: 'tHeaderValue' },
                         { text: 'Fecha/Hora', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
+                        { text: '' + data.pago.fechahoraactual, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -685,7 +435,7 @@ function Creditos(){
                         [
                             { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
+                            { text: '' + data.pago.nrodoc_cliente, style: 'tHeaderValue', colSpan: 4 },
                             {},
                             {},
                             {},
@@ -693,7 +443,7 @@ function Creditos(){
                         [
                             { text: 'Dirección', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
+                            { text: '' + data.pago.direccioncliente, style: 'tHeaderValue', colSpan: 4 },
                             { },
                             { },
                             { },
@@ -711,7 +461,7 @@ function Creditos(){
                             { text: 'I) CONTRAPRESTACIÓN POR EL SERVICIO', style: 'tHeaderLabel' },
                             { text: 'N° de Contrato', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '000000000001', style: 'tHeaderValue' },
+                            { text: '' + data.pago.codigocontrato, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -725,8 +475,8 @@ function Creditos(){
                         [
                             { text: 'Importe', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'S/. 26.55', style: 'tHeaderValue' },
-                            { text: '(VEINTISEIS CON 55/100 SOLES)', style: 'tHeaderValue' },
+                            { text: 'S/. ' + (parseFloat(data.pago.interessocio)).toFixed(2), style: 'tHeaderValue' },
+                            { text: '' + numeroALetras((data.pago.interessocio).toFixed(2)), style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -740,7 +490,7 @@ function Creditos(){
                         [
                             { text: 'Fecha de Inicio', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/04/2024', style: 'tHeaderValue', colSpan: 2 },
+                            { text: '' + formatoFecha(data.pago.fecha), style: 'tHeaderValue', colSpan: 2 },
                             {  },
                         ],
                     ],
@@ -755,7 +505,7 @@ function Creditos(){
                         [
                             { text: 'Fecha de Pago', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/05/2024', style: 'tHeaderValue', colSpan: 2 },
+                            { text: '' + formatoFecha(data.pago.fechalimite), style: 'tHeaderValue', colSpan: 2 },
                             {  },
                         ],
                     ],
@@ -770,49 +520,30 @@ function Creditos(){
                         [
                             { text: 'Forma de Pago', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'Mensual', style: 'tHeaderValue' },
+                            { text: '' + data.pago.formapago, style: 'tHeaderValue' },
                             {  text: 'En efectivo o mediante los canales de pago que Socio Efectivo autorice', style: 'tHeaderValue' },
                         ],
                     ],
                 },
                 layout: 'noBorders',
             },
-            {text: 'VALORIZACIÓN TOTAL DE/LOS BIENES:',  style: 'tHeaderLabel', margin: [0, 35, 0, 0]},
+            {text: 'VALORIZACIÓN TOTAL DE/LOS BIENES:',  style: 'tHeaderLabel', margin: [0, 25, 0, 0]},
             {text: 'De común acuerdo entre las partes.',  style: 'tHeaderValue', margin: [0, 7, 0, 0]},
             {text: 'II) DESCRIPCIÓN DEL/LOS BIEN/ES OBJETO DE CUSTODIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
             {
                 margin: [0, 10, 0, 0],
                 table: {
                     widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
-                    body: [
-                        [
-                            { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'KILATAJE', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderLabelCenter' },
-                            { text: 'PESO NETO (gramo)', style: 'tHeaderLabelCenter' },
-                            { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                            { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                        ],
-                        [
-                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
-                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                        ],
-                    ],
+                    body: detalle.map((item) => {return item}),
                 },
                 
             },
             {text: 'III) PENALIDAD',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
             {text: 'Se cobrará una penalidad de 10 soles, solo en caso de que, el cliente solicite la entrega de el/los bien/es el mismo dia de la celebración del contrato y se cumpla con lo previsto en el mismo.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
             {text: 'IV) BENEFICIARIO DE LA GARANTIA MOBILIARIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
-            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha 12/04/2024.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha ' + formatoFecha(data.pago.fecha) +'.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
             {
-                margin: [0, 60, 0, 0],
+                margin: [0, 50, 0, 0],
                 table: {
                     widths: ['50%', '50%'],
                     body: [
@@ -845,7 +576,7 @@ function Creditos(){
                         [
                             { text: ' ', style: 'tHeaderValue' },
                             { text: 'Nombre:', style: 'tHeaderValue' },
-                            { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                            { text: '' + data.pago.nombrescliente, style: 'tHeaderValue' },
                             { text: 'SOCIO EFECTIVO', style: 'tHeaderValue' },
                         ],
                     ],
@@ -860,7 +591,7 @@ function Creditos(){
                         [
                             { text: ' ', style: 'tHeaderValue' },
                             { text: 'D.O.I:', style: 'tHeaderValue' },
-                            { text: '46902128', style: 'tHeaderValue' },
+                            { text: '' + data.pago.nrodoc_cliente, style: 'tHeaderValue' },
                             { text: '', style: 'tHeaderValue' },
                         ],
                     ],
@@ -899,9 +630,9 @@ function Creditos(){
                     body: [
                         [
                             { text: 'N° de Contrato', style: 'tHeaderValue' },
-                            { text: '000000000000001', style: 'tHeaderValue' },
+                            { text: '' + data.pago.codigocontrato, style: 'tHeaderValue' },
                             { text: 'Fecha/Hora:', style: 'tHeaderValue' },
-                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
+                            { text: '' + data.pago.fechahoraactual, style: 'tHeaderValue' },
                         ],
                         [
                             { text: 'Agencia:', style: 'tHeaderValue' },
@@ -911,7 +642,7 @@ function Creditos(){
                         ],
                         [
                             { text: 'Usuario:', style: 'tHeaderValue' },
-                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                            { text: '' + data.pago.nombres_cajero, style: 'tHeaderValue' },
                             { text: ' ', style: 'tHeaderValue' },
                             { text: ' ', style: 'tHeaderValue' },
                         ],
@@ -933,15 +664,15 @@ function Creditos(){
                         { text: 'PUCALLPA', style: 'tHeaderValue' },
                         { text: 'Usuario', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                        { text: '' + data.pago.nombres_cajero, style: 'tHeaderValue' },
                         ],
                         [
                         { text: 'Cliente', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: 'VASQUEZ CISNEROS, CARLOS', style: 'tHeaderValue' },
+                        { text: '' + data.pago.nombrescliente, style: 'tHeaderValue' },
                         { text: 'Fecha/Hora', style: 'tHeaderLabel' },
                         { text: ':', style: 'tHeaderLabelCenter' },
-                        { text: '24/05/2024 11:01', style: 'tHeaderValue' },
+                        { text: '' + data.pago.fechahoraactual, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -955,7 +686,7 @@ function Creditos(){
                         [
                             { text: 'D.O.I(DNI/CE)', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '46902128', style: 'tHeaderValue', colSpan: 4 },
+                            { text: '' + data.pago.nrodoc_cliente, style: 'tHeaderValue', colSpan: 4 },
                             {},
                             {},
                             {},
@@ -963,7 +694,7 @@ function Creditos(){
                         [
                             { text: 'Dirección', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'JIRON LAS BRISAS MZ. 4 LT. 2 - MANANTAY', style: 'tHeaderValue', colSpan: 4 },
+                            { text: '' + data.pago.direccioncliente, style: 'tHeaderValue', colSpan: 4 },
                             { },
                             { },
                             { },
@@ -1005,7 +736,7 @@ function Creditos(){
                             { text: 'I) CONDICIONES GENERALES', style: 'tHeaderLabel' },
                             { text: 'N° de Credito', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '000000000001', style: 'tHeaderValue' },
+                            { text: '' + data.pago.codigocredito, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -1019,7 +750,7 @@ function Creditos(){
                         [
                             { text: 'Tipo de Producto', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'CONSUMO JOYAS', style: 'tHeaderValue' },
+                            { text: '' + data.pago.tiposervicio, style: 'tHeaderValue' },
                             { text: 'Tasa de Costo Efectiva Anual', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
                             { text: '101.86%', style: 'tHeaderValue' },
@@ -1076,7 +807,7 @@ function Creditos(){
                         [
                             { text: 'Monto del préstamo', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: 'S/. 300.00', style: 'tHeaderValue' },
+                            { text: 'S/. ' + data.pago.monto, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -1090,12 +821,12 @@ function Creditos(){
                         [
                             { text: 'Fecha de Vencimiento', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '12/05/2024', style: 'tHeaderValue' },
+                            { text: '' + formatoFecha(data.pago.fechalimite), style: 'tHeaderValue' },
                         ],
                         [
                             { text: 'ITF', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
-                            { text: '0.005%', style: 'tHeaderValue' },
+                            { text: '0.00%', style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -1115,17 +846,17 @@ function Creditos(){
                         ],
                         [
                             { text: 'Pago Mínimo', style: 'tHeaderLabel' },
-                            { text: 'S/. 30.00', style: ['tHeaderValue','textRight'] },
-                            { text: 'S/. 18.08', style: ['tHeaderValue','textRight']},
+                            { text: 'S/. ' + (data.pago.pagominimo).toFixed(2), style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. ' + (data.pago.interesnegocio).toFixed(2), style: ['tHeaderValue','textRight']},
                             { text: 'S/. 0.00', style: ['tHeaderValue','textRight'] },
-                            { text: 'S/. 48.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. ' + (parseFloat(data.pago.pagominimo) + parseFloat(data.pago.interesnegocio)).toFixed(2), style: ['tHeaderValue','textRight'] },
                         ],
                         [
                             { text: 'Pago Total', style: 'tHeaderLabel' },
-                            { text: 'S/. 300.00', style: ['tHeaderValue','textRight'] },
-                            { text: 'S/. 18.08', style: ['tHeaderValue','textRight']},
+                            { text: 'S/. ' + (data.pago.monto).toFixed(2), style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. ' + (data.pago.interesnegocio).toFixed(2), style: ['tHeaderValue','textRight']},
                             { text: 'S/. 0.00', style: ['tHeaderValue','textRight'] },
-                            { text: 'S/. 348.00', style: ['tHeaderValue','textRight'] },
+                            { text: 'S/. ' + (parseFloat(data.pago.monto) + parseFloat(data.pago.interesnegocio)).toFixed(2), style: ['tHeaderValue','textRight'] },
                         ],
                     ],
                 },
@@ -1184,26 +915,7 @@ function Creditos(){
                 table: {
                     
                     widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
-                    body: [
-                        [
-                            { text: 'ITEM', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'DECRIPCION', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'KILATAJE', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'PESO BRUTO (gramo)', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'PESO NETO (gramo)', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'OBSERVACIONES', style: 'tHeaderValue', margin: [0,1,0,0] },
-                            { text: 'VALORIZACION', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                        ],
-                        [
-                            { text: '1', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'Sortija', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '18', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '5.02', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: '4.92', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                            { text: 'rayado // chispa/ P/Sucio /deforme/impurezas', style: 'tHeaderValue', margin: [0,1,0,0] },
-                            { text: '300.00', style: 'tHeaderValueCenter', margin: [0,5,0,0] },
-                        ],
-                    ],
+                    body: detalle2.map((item) => {return item}),
                 },
                 
             },
@@ -1214,9 +926,9 @@ function Creditos(){
                     body: [
                         [
                             { text: 'N° de Crédito', style: 'tHeaderLabel' },
-                            { text: '000000000000001', style: 'tHeaderValue' },
+                            { text: '' + data.pago.codigocredito, style: 'tHeaderValue' },
                             { text: 'Fecha/Hora:', style: 'tHeaderLabel' },
-                            { text: '12/04/2024 10:28', style: 'tHeaderValue' },
+                            { text: '' + data.pago.fechahoraactual, style: 'tHeaderValue' },
                         ],
                         [
                             { text: 'Agencia:', style: 'tHeaderLabel' },
@@ -1226,7 +938,7 @@ function Creditos(){
                         ],
                         [
                             { text: 'Usuario:', style: 'tHeaderLabel' },
-                            { text: 'CARLOS VASQUEZ', style: 'tHeaderValue' },
+                            { text: '' + data.pago.nombres_cajero, style: 'tHeaderValue' },
                             { text: ' ', style: 'tHeaderValue' },
                             { text: ' ', style: 'tHeaderValue' },
                         ],
@@ -1237,7 +949,7 @@ function Creditos(){
             
         ];
 
-         const response = await documento(output, '', content);
+        const response = await documento(output, '_blank', content);
     }
 
     async function confirmCreatedCredito(){
@@ -1245,6 +957,7 @@ function Creditos(){
             const response = await createdCredito(formData);
 
             onGenerateTicket('print', response);
+            onGenerateDocumento('print', response);
             
             setRegister(!register);
             setFormData(initialValues);
@@ -1659,11 +1372,6 @@ function Creditos(){
                 </TEModalContent>
                 </TEModalDialog>
             </TEModal>
-            <div className="text-left ">
-                                <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> onGenerateDocumento('print')}>
-                                    <i className="fas fa-plus-circle"></i> imprimir documento
-                                </button>
-            </div>
             
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
