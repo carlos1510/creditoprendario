@@ -17,7 +17,7 @@ export async function action({ request }){
 
     let redirectTo = formData.get("redirectTo");
 
-    return redirect("/");
+    return redirect("/home");
 }
 
 function Login(){
