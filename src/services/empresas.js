@@ -1,31 +1,16 @@
+import { redirect } from "react-router-dom";
+import { authProvider } from "../auth";
 import { URL_BASE, tokenKey } from "../constants";
 
 export async function getEmpresas(){
-    //const token = authProvider.token;
+    const token = authProvider.token;
 
     const url = `${URL_BASE}/empresas`;
     const options = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    const body = await response.json();
-    return body.data;
-}
-
-export async function createdEmpresa(formData){
-    const url = `${URL_BASE}/empresas`;
-    const options = {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-            "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
@@ -36,20 +21,54 @@ export async function createdEmpresa(formData){
         return body.data;
     }
 
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
+    const body = await response.json();
+    return Promise.reject(new Error(body.error));
+}
+
+export async function createdEmpresa(formData){
+    const url = `${URL_BASE}/empresas`;
+    const token = window.localStorage.getItem(tokenKey); 
+
+    const options = {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if(response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
     const body = await response.json();
     return Promise.reject(new Error(body.error));
 }
 
 export async function editEmpresa(id, updateData){
     const url = `${URL_BASE}/empresas/${id}`;
-    //const token = window.localStorage.getItem(tokenKey); 
+    const token = window.localStorage.getItem(tokenKey); 
 
     const options = {
         method: "PATCH",
         body: JSON.stringify(updateData),
         headers: {
           "Content-Type": "application/json",
-          //Authorization: `bearer ${token}`,
+          Authorization: `bearer ${token}`,
         },
     };
 
@@ -60,10 +79,10 @@ export async function editEmpresa(id, updateData){
         return body.data;
     }
 
-    /*if (response.status === 401) {
+    if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
-    }*/
+    }
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));
@@ -87,10 +106,10 @@ export async function deleteEmpresa(id){
         return body.ok;
     }
 
-    /*if (response.status === 401) {
+    if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
-    }*/
+    }
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));

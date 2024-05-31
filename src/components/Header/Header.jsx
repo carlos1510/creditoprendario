@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form, Link } from 'react-router-dom';
 
-function Header({onClick}){
+function Header({onClick, username, rol}){
     const [hide, setHide] = React.useState(true);
     const [hideDrop, setHideDrop] = React.useState(false);
     const handleClick = () => {
@@ -33,8 +33,8 @@ function Header({onClick}){
                             </div>
                         </div>
                         <div className="p-2 md:block text-left">
-                            <h2 className="text-sm font-semibold text-gray-800">Usuario</h2>
-                            <p className="text-xs text-gray-500">Administrator</p>
+                            <h2 className="text-sm font-semibold text-gray-800">{username}</h2>
+                            <p className="text-xs text-gray-500">{rol}</p>
                         </div> 
                 </button>
                 <ul className={hideDrop?'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5':'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden'}>

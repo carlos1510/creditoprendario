@@ -4,15 +4,27 @@ import { Outlet,
   useActionData,
   useLoaderData,
  } from 'react-router-dom';
-//import reactLogo from './assets/react.svg'
-//import viteLogo from '/vite.svg'
 import './App.css';
 import Header from '../../components/Header/Header'
 import Sidebar from '../../components/Sidebar/Sidebar';
+import { authProvider } from '../../auth';
 
+export async function loader({ request }){
+  if(!authProvider.isAuthenticated){
+    let params = new URLSearchParams();
+    params.set("from", new URL(request.url).pathname);
+    return redirect("/login?" + params.toString());
+  }
 
+  const username = authProvider.username;
+  const rol = authProvider.rol;
+
+  return {username, rol};
+}
 
 function App() {
+  const { username, rol } = useLoaderData();
+
   const [eventResult, setEventResult] = React.useState(null);
 
     const handleChildClick = (result) => {
@@ -24,7 +36,7 @@ function App() {
     <>
       <div className="flex flex-col h-screen ">
 
-            <Header onClick={handleChildClick} />
+            <Header onClick={handleChildClick} username={username} rol={rol} />
 
           <div className="flex-1 flex ">
 

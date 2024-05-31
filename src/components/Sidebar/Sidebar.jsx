@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Form, Link } from "react-router-dom";
 
 
 function Sidebar({hide}){
@@ -109,9 +109,11 @@ function Sidebar({hide}){
                 </nav>
 
 
-                <Link to="" className="block text-center sm:text-left text-gray-50 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white mt-auto">
-                    <i className="fas fa-sign-out-alt mr-2"></i><span className="hidden sm:inline">Cerrar sesión</span> 
-                </Link>
+                <Form method="POST" action="/logout" className="block text-center sm:text-left text-gray-50 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white mt-auto">
+                    <button type="submit" >
+                        <i className="fas fa-sign-out-alt mr-2"></i><span className="hidden sm:inline">Cerrar sesión</span> 
+                    </button>
+                </Form>
                     
                 <div className="bg-gradient-to-r from-cyan-300 to-cyan-500 h-px mt-2"></div>
 

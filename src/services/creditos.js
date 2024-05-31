@@ -1,7 +1,9 @@
+import { redirect } from "react-router-dom";
+import { authProvider } from "../auth";
 import { URL_BASE, tokenKey } from "../constants";
 
 export async function getCreditos(responsableId,fecha1, fecha2, nroDocumento){
-    //const token = authProvider.token;
+    const token = window.localStorage.getItem(tokenKey); 
     
     responsableId = isNaN(parseInt(responsableId))? 0 : responsableId;
     nroDocumento = isNaN(parseInt(nroDocumento))?0:nroDocumento;
@@ -10,48 +12,7 @@ export async function getCreditos(responsableId,fecha1, fecha2, nroDocumento){
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    const body = await response.json();
-    return body.data;
-}
-
-export async function createdCredito(formData){
-    const url = `${URL_BASE}/creditos`;
-    const options = {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-            "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-
-    if(response.ok) {
-        const body = await response.json();
-        return body.data;
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
-}
-
-export async function editCredito(id, updateData){
-    const url = `${URL_BASE}/creditos/${id}`;
-    //const token = window.localStorage.getItem(tokenKey); 
-
-    const options = {
-        method: "PATCH",
-        body: JSON.stringify(updateData),
-        headers: {
-          "Content-Type": "application/json",
-          //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
@@ -62,10 +23,68 @@ export async function editCredito(id, updateData){
         return body.data;
     }
 
-    /*if (response.status === 401) {
+    if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
-    }*/
+    }
+
+    const body = await response.json();
+    return Promise.reject(new Error(body.error));
+}
+
+export async function createdCredito(formData){
+    const url = `${URL_BASE}/creditos`;
+    const token = window.localStorage.getItem(tokenKey); 
+
+    const options = {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
+    const body = await response.json();
+    return Promise.reject(new Error(body.error));
+}
+
+export async function editCredito(id, updateData){
+    const url = `${URL_BASE}/creditos/${id}`;
+    const token = window.localStorage.getItem(tokenKey); 
+
+    const options = {
+        method: "PATCH",
+        body: JSON.stringify(updateData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));
@@ -73,13 +92,13 @@ export async function editCredito(id, updateData){
 
 export async function deleteCredito(id){
     const url = `${URL_BASE}/creditos/${id}`;
-    //const token = window.localStorage.getItem(tokenKey);
+    const token = window.localStorage.getItem(tokenKey);
 
     const options = {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
@@ -90,83 +109,123 @@ export async function deleteCredito(id){
         return body.ok;
     }
 
-    /*if (response.status === 401) {
+    if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
-    }*/
+    }
 
     const body = await response.json();
     return Promise.reject(new Error(body.error));
 }
 
 export async function getNroComprobante(id){
-    //const token = authProvider.token;
+    const token = window.localStorage.getItem(tokenKey); 
 
     const url = `${URL_BASE}/creditos/comprobante/${id}`;
     const options = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
     const response = await fetch(url, options);
 
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
     const body = await response.json();
-    return body.data;
+    return Promise.reject(new Error(body.error));
 }
 
 export async function getCreditoByDocumento(fecha1, fecha2, nroDocumento){
     const url = `${URL_BASE}/creditos/cliente/${nroDocumento}`;
+    const token = window.localStorage.getItem(tokenKey); 
 
     const options = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
     const response = await fetch(url, options);
 
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
     const body = await response.json();
-    return body.data;
+    return Promise.reject(new Error(body.error));
 }
 
 export async function getNumeroContratoCredito() {
-    //obtenerNroContratoCredito
-    //const token = authProvider.token;
+    const token = window.localStorage.getItem(tokenKey); 
 
     const url = `${URL_BASE}/obtenerNroContratoCredito`;
     const options = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
     const response = await fetch(url, options);
 
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
     const body = await response.json();
-    return body.data;
+    return Promise.reject(new Error(body.error));
 }
 
 export async function getImprimirTicketCredito(id) {
-    //const token = authProvider.token;
+    const token = window.localStorage.getItem(tokenKey); 
 
     const url = `${URL_BASE}/imprimirTicketCredito/${id}`;
     const options = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            //Authorization: `bearer ${token}`,
+            Authorization: `bearer ${token}`,
         },
     };
 
     const response = await fetch(url, options);
 
+    if (response.ok) {
+        const body = await response.json();
+        return body.data;
+    }
+
+    if (response.status === 401) {
+        authProvider.logout();
+        throw redirect("/login");
+    }
+
     const body = await response.json();
-    return body;
+    return Promise.reject(new Error(body.error));
 }

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./routes/App";
-import Login from "./routes/Login/Login";
+import App, { loader as rootLoader } from "./routes/App";
+import Login, { action as loginAction } from "./routes/Login/Login";
 import Home from "./components/Home/Home";
 import Gasto from "./components/Gasto/Gasto";
 import PagoAlquiler from "./routes/PagoAlquiler/PagoAlquiler";
@@ -12,6 +12,7 @@ import Cajas from "./routes/Cajas/Cajas";
 import Creditos from "./routes/Creditos/Creditos";
 import Cobros from "./routes/Cobros/Cobros";
 import Pagos from "./routes/Pagos/Pagos";
+import { action as logoutAction } from "./routes/Logout/logout";
 
 const baseruta = '/creditoprendario';
 
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
         id: "app",
         path: "/home?",
         element: <App />,
+        loader: rootLoader,
         children: [
             {
                 index: true,
@@ -71,7 +73,13 @@ export const router = createBrowserRouter([
     },
     {
         path: "/login",
-        element: <Login />
-    }
+        element: <Login />,
+        action: loginAction,
+    },
+    {
+        path: "/logout",
+        action: logoutAction,
+    },
 ], 
-{basename: baseruta})
+{basename: baseruta}
+)
