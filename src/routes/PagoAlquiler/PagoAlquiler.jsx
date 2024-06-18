@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import { createdPagoAlquiler, deletePagoAlquiler, editPagoAlquiler, getPagoAlquileres } from '../../services/pagoAlquiler';
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util'; 
 import { useTitle } from '../../components/Title/Title';
+import { authProvider } from '../../auth';
 
 
 const initialValues = {
@@ -29,6 +30,8 @@ function PagoAlquiler(){
     const [currentPage, setCurrentPage] = React.useState(1);
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
+
+    const navigate = useNavigate();
 
     const [fechaPago, setFechaPago] = React.useState({
         startDate: null,
@@ -68,6 +71,11 @@ function PagoAlquiler(){
 
     async function getLista(){
         const [resultados] = await Promise.all([getPagoAlquileres(fechaIni.startDate, fechafin.startDate)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setPagoAlquileres(resultados);
     }
@@ -75,6 +83,11 @@ function PagoAlquiler(){
     async function confirmCreatedPagoAlquiler(){
         try{
             const response = await createdPagoAlquiler(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -100,6 +113,11 @@ function PagoAlquiler(){
     async function confirmUpdatePagoAlquiler(){
         try{
             const response = await editPagoAlquiler(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -125,6 +143,11 @@ function PagoAlquiler(){
     async function confirmDeletePagoAlquiler(id){
         try{
             const response = await deletePagoAlquiler(id);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
             getLista();

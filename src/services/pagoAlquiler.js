@@ -19,15 +19,9 @@ export async function getPagoAlquileres(fecha1, fecha2){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function createdPagoAlquiler(formData){
@@ -48,15 +42,9 @@ export async function createdPagoAlquiler(formData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function editPagoAlquiler(id, updateData){
@@ -77,15 +65,9 @@ export async function editPagoAlquiler(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function deletePagoAlquiler(id){
@@ -103,14 +85,8 @@ export async function deletePagoAlquiler(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }

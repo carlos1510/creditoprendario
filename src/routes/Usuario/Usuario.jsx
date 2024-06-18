@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Form, Link } from "react-router-dom";
-import Datepicker from "react-tailwindcss-datepicker"; 
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Pagination from '../../components/Pagination/Pagination';
 import { createdUser, editUser, getUsuarioByNroDoc, getUsuarios } from '../../services/usuarios';
 import { useTitle } from '../../components/Title/Title';
+import { authProvider } from "../../auth";
+import { getEmpresas } from '../../services/empresas';
 
 const initialValues = {
     id: 0,
@@ -17,7 +18,7 @@ const initialValues = {
     password: "",
     acceso: 0,
     rol: "",
-    empresa_id: 1
+    empresa_id: ""
 };
 
 function Usuario(){
@@ -30,6 +31,9 @@ function Usuario(){
     const [perPage, setPerPage] = React.useState(10);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
+    const [empresas, setEmpresas] = React.useState([]);
+
+    const navigate = useNavigate();
     
     const lastIndex = currentPage * perPage;
     const firstIndex = lastIndex - perPage;
@@ -37,16 +41,34 @@ function Usuario(){
     React.useEffect(() => {
         setFormData(initialValues);
         getLista();
+        getListaEmpresas();
     }, []);
+
+    async function getListaEmpresas(){
+        const [response] = await Promise.all([getEmpresas()]);
+
+        setEmpresas(response);
+    }
 
     async function getLista(){
         const [resultados] = await Promise.all([getUsuarios()]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setUsuarios(resultados);
     }
 
     async function obtenerDatosUserByNumDoc() {
         const [resultados] = await Promise.all([getUsuarioByNroDoc(formData.tipodocumentoid, formData.numerodocumento)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         if(resultados.nombres === ''){
             Swal.fire({
                 icon: "warning",
@@ -62,6 +84,11 @@ function Usuario(){
     async function confirmCreatedUser(){
         try{
             const response = await createdUser(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -87,6 +114,11 @@ function Usuario(){
     async function confirmUpdateUser(){
         try{
             const response = await editUser(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -134,7 +166,6 @@ function Usuario(){
                 email: datos.email,
                 acceso: datos.acceso,
                 rol: datos.rol,
-                empresa_id: datos.empresa_id
             });
             if(datos.acceso === 1){
                 setIsChecked(true);
@@ -243,7 +274,7 @@ function Usuario(){
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
                             <label htmlFor="emailTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo Electronico <span className='text-red-600'>*</span></label> 
-                            <input type="email" 
+                            <input type="email"  
                                 id="emailTxt" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='email'
@@ -252,6 +283,27 @@ function Usuario(){
                                 required
                             />
                         </div>
+                        {
+                            authProvider.rol === 'Administrador'?(
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="empresaidTxt" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa/Negocio <span className='text-red-600'>*</span></label> 
+                                    <select type="email" 
+                                        id="empresaidTxt" 
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        name='empresa_id'
+                                        value={formData.empresa_id}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">---</option>
+                                        {
+                                            empresas?.map((empresa) => (
+                                                <option key={empresa.id} value={empresa.id}>{empresa.nombre}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            ):""
+                        }
                         <div className='grid md:grid-cols-2 md:gap-6'>
                             <div className="relative z-0 w-full mb-5 group">
                                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acceso</label> 
@@ -272,8 +324,7 @@ function Usuario(){
                                     value={formData.rol}
                                     onChange={handleChange}
                                 >
-                                    <option value="---">---</option>
-                                    <option value="Administrador">Administrador</option>
+                                    <option value="">---</option>
                                     <option value="SubAdministrador">SubAdministrador</option>
                                     <option value="Cajero">Cajero(a)</option>
                                     <option value="Prestamista">Prestamista</option>

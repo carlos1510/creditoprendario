@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Link } from "react-router-dom";
+import { authProvider } from "../../auth";
 
 
 function Sidebar({hide}){
@@ -22,11 +23,16 @@ function Sidebar({hide}){
                             <i className="fas fa-money-bill-alt mr-2"></i> Cobrar
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/servicio" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                <i className="fas fa-file-alt mr-2"></i> Servicio
-                            </Link>
-                        </li>
+                        {
+                            (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ? 
+                            (
+                                <li>
+                                    <Link to="/servicio" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                        <i className="fas fa-file-alt mr-2"></i> Servicio
+                                    </Link>
+                                </li>
+                            ):""
+                        }
                         <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowOpe(!showOpe)}>
                                 <div className="flex items-center">
@@ -41,11 +47,12 @@ function Sidebar({hide}){
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Creditos 
                                     </Link>
                                 </li>
-                                {/* <li>
+                                <li>
                                     <Link to="/pagos" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Pagos 
+                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Pagos Diarios
                                     </Link>
                                 </li>
+                                {/* 
                                 <li>
                                     <Link to="/gasto" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Gastos 
@@ -53,11 +60,16 @@ function Sidebar({hide}){
                                 </li> */}
                             </ul>   
                         </li>
-                        <li>
-                            <Link to="/caja" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                <i className="fas fa-money-check-alt mr-2"></i> Caja
-                            </Link>
-                        </li>
+                        {
+                            authProvider.rol !== 'Prestamista' ? 
+                            (
+                                <li>
+                                    <Link to="/caja" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                        <i className="fas fa-money-check-alt mr-2"></i> Caja
+                                    </Link>
+                                </li>
+                            ):""
+                        }
                         {/* <li className="opcion-con-desplegable">
                             <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowReporte(!showReporte)}>
                                 <div className="flex items-center">
@@ -74,37 +86,46 @@ function Sidebar({hide}){
                                 </li>
                             </ul>   
                         </li> */}
-                        <li className="opcion-con-desplegable">
-                            <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowConfig(!showConfig)}>
-                                <div className="flex items-center">
-                                <i className="fas fa-cogs mr-2"></i>
-                                <span>Configuracion</span>
-                                </div>
-                                <i className={showConfig ? "fas fa-chevron-up text-xs": "fas fa-chevron-down text-xs"}></i>
-                            </div>
-                            <ul className={showConfig ? "desplegable ml-4": "desplegable ml-4 hidden"}>
-                                <li>
-                                    <Link to="/usuario" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Usuarios 
-                                    </Link>
+                        {
+                            (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ? 
+                            (
+                                <li className="opcion-con-desplegable">
+                                    <div className="flex items-center justify-between p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white" onClick={()=> setShowConfig(!showConfig)}>
+                                        <div className="flex items-center">
+                                        <i className="fas fa-cogs mr-2"></i>
+                                        <span>Configuracion</span>
+                                        </div>
+                                        <i className={showConfig ? "fas fa-chevron-up text-xs": "fas fa-chevron-down text-xs"}></i>
+                                    </div>
+                                    <ul className={showConfig ? "desplegable ml-4": "desplegable ml-4 hidden"}>
+                                        <li>
+                                            <Link to="/usuario" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                                <i className="fas fa-chevron-right mr-2 text-xs"></i> Usuarios 
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/pagoAlquiler" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                                <i className="fas fa-chevron-right mr-2 text-xs"></i> Pago Alquiler 
+                                            </Link>
+                                        </li>
+                                        {
+                                            authProvider.rol === 'Administrador' ? (
+                                                <li>
+                                                    <Link to="/empresas" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Empresas
+                                                    </Link>
+                                                </li>
+                                            ):""
+                                        }
+                                        {/* <li>
+                                            <Link to="/empresa" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                                <i className="fas fa-chevron-right mr-2 text-xs"></i> Datos Empresa 
+                                            </Link>
+                                        </li> */}
+                                    </ul>   
                                 </li>
-                                <li>
-                                    <Link to="/pagoAlquiler" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Pago Alquiler 
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/empresas" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Empresas
-                                    </Link>
-                                </li>
-                                {/* <li>
-                                    <Link to="/empresa" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
-                                        <i className="fas fa-chevron-right mr-2 text-xs"></i> Datos Empresa 
-                                    </Link>
-                                </li> */}
-                            </ul>   
-                        </li>
+                            ):""
+                        }
                     </ul>                   
                 </nav>
 

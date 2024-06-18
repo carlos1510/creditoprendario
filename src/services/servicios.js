@@ -18,15 +18,9 @@ export async function getServicios(){
     if(response.ok){
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if(response.status === 401){
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getServicio(id){
@@ -47,15 +41,9 @@ export async function getServicio(id){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function saveServicio(formData){
@@ -76,15 +64,9 @@ export async function saveServicio(formData){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function editServicio(id, updateData){
@@ -106,15 +88,9 @@ export async function editServicio(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function deleteServicio(id){
@@ -132,16 +108,8 @@ export async function deleteServicio(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        //const navigate = useNavigate();
-        //navigate("/login");
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }

@@ -9,7 +9,6 @@ import Swal from 'sweetalert2';
 import { useTitle } from '../../components/Title/Title';
 import { obtenerAperturaCaja } from '../../services/caja';
 import ticket from '../../utils/ticket';
-import { numeroALetras } from '../../utils/numeroALetras';
 
 const initialValues = {
     id: 0,
@@ -19,11 +18,9 @@ const initialValues = {
     total: "",
     numerodocumento: "",
     nombrescliente: "",
-    user_id: 1,
     fecha: "",
     capital: "",
-    empresa_id: 1,
-    credito_id: "1",
+    credito_id: null,
     seriecorrelativo: "",
     numerocorrelativo: "",
     codigogenerado: "",
@@ -491,15 +488,13 @@ function Cobros(){
         setFormData({
             id: 0,
             fechavencimientoanterior: formatoFecha(datos.fechalimite),
-            monto: "",
+            monto: 0,
             interes: (datos.interes_negocio + datos.interes_socio),
             total: (datos.interes_negocio + datos.interes_socio + datos.monto),
             numerodocumento: datos.numerodocumento,
             nombrescliente: datos.nombrescliente,
-            user_id: 1,
             fecha: fechaActual,
             capital: datos.monto,
-            empresa_id: 1,
             credito_id: datos.id,
             seriecorrelativo: "",
             numerocorrelativo: "",
@@ -515,7 +510,8 @@ function Cobros(){
             nro_dias: datos.nro_dias,
             tiposervicio: datos.tiposervicio,
             plazo: datos.plazo,
-            numeropago: resultado.numeropago, codigopago: resultado.codigopago
+            numeropago: resultado.numeropago, 
+            codigopago: resultado.codigopago
         });
     }
 
@@ -595,7 +591,6 @@ function Cobros(){
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='codigogenerado'
                                     value={formData.codigogenerado || ''}
-                                    
                                     readOnly
                                 />
                             </div>

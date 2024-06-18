@@ -58,27 +58,16 @@ export const authProvider = {
             authProvider.token = null;
             authProvider.username = null;
             authProvider.rol = null;
-        }else {
-            window.localStorage.removeItem(tokenKey);
-            window.localStorage.removeItem(userName);
-            window.localStorage.removeItem(rol);
-
-            authProvider.isAuthenticated = false;
-            authProvider.token = null;
-            authProvider.username = null;
-            authProvider.rol = null;
         }
+    },
+    async logoutStorage(){
+        window.localStorage.removeItem(tokenKey);
+        window.localStorage.removeItem(userName);
+        window.localStorage.removeItem(rol);
 
-        /*if(response.status === 401){
-            window.localStorage.removeItem(tokenKey);
-            window.localStorage.removeItem(userName);
-            window.localStorage.removeItem(rol);
-
-            authProvider.isAuthenticated = false;
-            authProvider.token = null;
-            authProvider.username = null;
-            authProvider.rol = null;
-        }*/
-
+        authProvider.isAuthenticated = false;
+        authProvider.token = null;
+        authProvider.username = null;
+        authProvider.rol = null;
     }
 }

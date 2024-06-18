@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Pagination from '../../components/Pagination/Pagination';
 import { createdEmpresa, deleteEmpresa, editEmpresa, getEmpresas } from '../../services/empresas';
 import { useTitle } from '../../components/Title/Title';
+import { authProvider } from '../../auth';
 
 const initialValues = {
     id: 0,
@@ -28,6 +29,7 @@ function Empresas(){
     const [currentPage, setCurrentPage] = React.useState(1);
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
+    const navigate = useNavigate();
     
     const lastIndex = currentPage * perPage;
     const firstIndex = lastIndex - perPage;
@@ -40,6 +42,11 @@ function Empresas(){
     async function confirmCreatedEmpresa(){
         try{
             const response = await createdEmpresa(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -65,6 +72,11 @@ function Empresas(){
     async function confirmUpdateEmpresa(){
         try{
             const response = await editEmpresa(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -90,6 +102,11 @@ function Empresas(){
     async function confirmDeleteEmpresa(id){
         try{
             const response = await deleteEmpresa(id);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
             getLista();
@@ -105,6 +122,11 @@ function Empresas(){
 
     async function getLista(){
         const [resultados] = await Promise.all([getEmpresas()]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setEmpresas(resultados);
     }

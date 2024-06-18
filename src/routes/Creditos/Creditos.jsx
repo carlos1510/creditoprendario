@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Await, Form, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     TERipple,
     TEModal,
@@ -22,6 +22,7 @@ import { obtenerAperturaCaja } from '../../services/caja';
 import ticket from '../../utils/ticket';
 import documento from '../../utils/documentPdf';
 import { getDetalleCreditoByIdCredito } from '../../services/detalleCredito';
+import { authProvider } from '../../auth';
 
 const initialValues = {
     id: 0,
@@ -39,10 +40,8 @@ const initialValues = {
     total_texto: "",
     descuento: "",
     montoactual: "",
-    user_id: 1,
     tipo_comprobante_id: "",
     servicio_id: "",
-    empresa_id: 1,
     tipodocumento: "",
     numerodocumento: "",
     nombrescliente: "",
@@ -97,6 +96,8 @@ function Creditos(){
     const [formDataDetalle, setFormDataDetalle] = React.useState(initialValuesDetalle);
     const [montoTotal, setMontoTotal] = React.useState(0);
 
+    const navigate = useNavigate();
+
     const [fechaHoy, setFechaHoy] = React.useState({
         startDate: null,
         endDate: null
@@ -140,17 +141,34 @@ function Creditos(){
 
     async function getLista(){
         const [resultados] = await Promise.all([getCreditos(responsableId, fechaIni.startDate, fechafin.startDate, nroDocumentoFiltro)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setCreditos(resultados);
     }
 
     async function obtenerServicios(){
-        const [resultados] = await Promise.all([getServicios()])
+        const [resultados] = await Promise.all([getServicios()]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         setServicios(resultados);
     }
 
     async function obtenerClienteByNumDoc() {
         const [resultados] = await Promise.all([getClienteByNroDoc(formData.tipodocumento, formData.numerodocumento)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         if(resultados.nombrescliente === ''){
             Swal.fire({
                 icon: "warning",
@@ -184,6 +202,11 @@ function Creditos(){
 
     async function obtenerDuplicadoTicket(id){
         const [resultados] = await Promise.all([getImprimirTicketCredito(id)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         onGenerateTicket('print', resultados);
         onGenerateDocumento('print', resultados);
@@ -955,6 +978,11 @@ function Creditos(){
         try{
             const response = await createdCredito(formData);
 
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
+
             onGenerateTicket('print', response);
             onGenerateDocumento('print', response);
             
@@ -984,6 +1012,11 @@ function Creditos(){
     async function confirmUpdateCredito(){
         try{
             const response = await editCredito(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -1011,6 +1044,11 @@ function Creditos(){
     async function confirmDeleteCredito(id){
         try{
             const response = await deleteCredito(id);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
             getLista();
@@ -1076,17 +1114,32 @@ function Creditos(){
     async function obtenerNroComprobante(event){
         const [resultado] = await Promise.all([getNroComprobante(event.target.value)]);
 
+        if(resultado === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         setFormData({...formData, seriecorrelativo: resultado.seriecorrelativo, numerocorrelativo: resultado.numerocorrelativo, codigogenerado: resultado.codigogenerado, tipo_comprobante_id: event.target.value});
     }
 
     async function obtenerNroContratoCredito(){
         const [resultado] = await Promise.all([getNumeroContratoCredito()]);
 
+        if(resultado === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         setFormData({...formData, numerocredito: resultado.numerocredito, codigocredito: resultado.codigocredito, numerocontrato: resultado.numerocontrato, codigocontrato: resultado.codigocontrato});
     }
 
     async function obtenerDetalleCredito(datos){
         const [resultado] = await Promise.all([getDetalleCreditoByIdCredito(datos.id)]);
+
+        if(resultado === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
 
         setFormData({
             id: datos.id,
@@ -1831,8 +1884,11 @@ function Creditos(){
                                         </td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
                                             {
-                                                estadoApertura===0?(
-                                                    <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
+                                                (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ?
+                                                (
+                                                    estadoApertura===0?(
+                                                        <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
+                                                    ):""
                                                 ):""
                                             }
 

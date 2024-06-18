@@ -19,15 +19,17 @@ export async function getUsuarios(){
     if(response.ok){
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if(response.status === 401){
+    /*if(response.status === 401){
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function getUsuariosByEmpresa(){
@@ -47,15 +49,17 @@ export async function getUsuariosByEmpresa(){
     if(response.ok){
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if(response.status === 401){
+    /*if(response.status === 401){
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function createdUser(formData){
@@ -75,15 +79,17 @@ export async function createdUser(formData){
     if(response.ok){
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if(response.status === 401){
+    /*if(response.status === 401){
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function editUser(id, updateData){
@@ -104,15 +110,17 @@ export async function editUser(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function getUsuarioByNroDoc(tipodocumento, numerodocumento){
@@ -132,13 +140,15 @@ export async function getUsuarioByNroDoc(tipodocumento, numerodocumento){
     if(response.ok){
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if(response.status === 401){
+    /*if(response.status === 401){
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }

@@ -37,16 +37,18 @@ function Header({onClick, username, rol}){
                             <p className="text-xs text-gray-500">{rol}</p>
                         </div> 
                 </button>
-                <ul className={hideDrop?'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5':'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden'}>
+                <ul className={hideDrop?'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 bg-white ring-1 ring-black ring-opacity-5':'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden'}>
                     <li>
-                        <Link href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Perfil</Link>
+                        <Link href="#" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">
+                            <i className="fas fa-user mr-2"></i> Perfil
+                        </Link>
                     </li>
                     
                     <li>
-                        <Form method="POST" action="">
-                            <a role="menuitem" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer" >
-                                Cerrar Sesión
-                            </a>
+                        <Form method="POST" action="/logout">
+                            <button type="submit" role="menuitem" className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer">
+                                <i className="fas fa-sign-out-alt mr-2"></i><span className="hidden sm:inline">Cerrar sesión</span> 
+                            </button>
                         </Form>
                     </li>
                 </ul>

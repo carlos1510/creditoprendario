@@ -20,16 +20,10 @@ export async function getCobros(responsableId,fecha1, fecha2, nroDocumento){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function createdCobro(formData){
@@ -49,16 +43,10 @@ export async function createdCobro(formData){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function editCobro(id, updateData){
@@ -79,15 +67,9 @@ export async function editCobro(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function deleteCobro(id){
@@ -106,16 +88,10 @@ export async function deleteCobro(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getNroComprobantePago(id){
@@ -134,16 +110,10 @@ export async function getNroComprobantePago(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getNumeroPago() {
@@ -162,14 +132,8 @@ export async function getNumeroPago() {
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }

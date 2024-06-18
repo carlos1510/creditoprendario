@@ -19,15 +19,17 @@ export async function getCajas(fecha1, fecha2){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
-    }
+    }*/
 
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    /*const body = await response.json();
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function createdCaja(formData){
@@ -47,15 +49,17 @@ export async function createdCaja(formData){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function editCaja(id, updateData){
@@ -76,15 +80,17 @@ export async function editCaja(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function deleteCaja(id){
@@ -103,16 +109,18 @@ export async function deleteCaja(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function getCierraCaja(id){
@@ -132,15 +140,17 @@ export async function getCierraCaja(id){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function cerrarCaja(formData){
@@ -160,15 +170,17 @@ export async function cerrarCaja(formData){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }
 
 export async function obtenerAperturaCaja(){
@@ -187,13 +199,15 @@ export async function obtenerAperturaCaja(){
     if(response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
 
-    if (response.status === 401) {
+    /*if (response.status === 401) {
         authProvider.logout();
         throw redirect("/login");
     }
 
     const body = await response.json();
-    return Promise.reject(new Error(body.error));
+    return Promise.reject(new Error(body.error));*/
 }

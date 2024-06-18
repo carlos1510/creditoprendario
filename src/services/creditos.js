@@ -21,15 +21,9 @@ export async function getCreditos(responsableId,fecha1, fecha2, nroDocumento){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function createdCredito(formData){
@@ -50,15 +44,9 @@ export async function createdCredito(formData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function editCredito(id, updateData){
@@ -79,15 +67,9 @@ export async function editCredito(id, updateData){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function deleteCredito(id){
@@ -106,16 +88,10 @@ export async function deleteCredito(id){
 
     if (response.ok) {
         const body = await response.json();
-        return body.ok;
+        return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getNroComprobante(id){
@@ -135,15 +111,9 @@ export async function getNroComprobante(id){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getCreditoByDocumento(fecha1, fecha2, nroDocumento){
@@ -163,15 +133,9 @@ export async function getCreditoByDocumento(fecha1, fecha2, nroDocumento){
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getNumeroContratoCredito() {
@@ -191,15 +155,9 @@ export async function getNumeroContratoCredito() {
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }
 
 export async function getImprimirTicketCredito(id) {
@@ -219,13 +177,7 @@ export async function getImprimirTicketCredito(id) {
     if (response.ok) {
         const body = await response.json();
         return body.data;
+    }else{
+        return response.status;
     }
-
-    if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));
 }

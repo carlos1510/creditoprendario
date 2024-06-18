@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteServicio, editServicio, getServicios, saveServicio } from "../../services/servicios";
 import Swal from "sweetalert2";
 import Pagination from '../Pagination/Pagination';
 import { useTitle } from '../Title/Title';
+import { authProvider } from '../../auth';
 
 const initialValues = {
     id: 0,
@@ -14,7 +15,6 @@ const initialValues = {
     porcentajesocio: "",
     porcentajenegocio: "",
     porcentaje: "",
-    empresa_id: 1
 };
 
 function Servicio(){
@@ -26,6 +26,8 @@ function Servicio(){
     const [currentPage, setCurrentPage] = React.useState(1);
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
+
+    const navigate = useNavigate();
     
     const lastIndex = currentPage * perPage;
     const firstIndex = lastIndex - perPage;
@@ -38,6 +40,11 @@ function Servicio(){
     async function confirmSaveServicio(){
         try{
             const response = await saveServicio(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -63,6 +70,11 @@ function Servicio(){
     async function confirmUpdateServicio(){
         try{
             const response = await editServicio(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -88,6 +100,11 @@ function Servicio(){
     async function confirmDeleteServicio(id){
         try{
             const response = await deleteServicio(id);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
             getLista();
@@ -103,6 +120,11 @@ function Servicio(){
 
     async function getLista(){
         const [resultados] = await Promise.all([getServicios()]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setServicios(resultados);
     }
@@ -144,7 +166,6 @@ function Servicio(){
                 porcentajesocio: datos.porcentajesocio,
                 porcentajenegocio: datos.porcentajenegocio,
                 porcentaje: datos.porcentaje,
-                empresa_id: datos.empresa_id
             });
         }else{
             setFormData(initialValues);

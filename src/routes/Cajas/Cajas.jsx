@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import './style.css';
 import Pagination from '../../components/Pagination/Pagination';
@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { cerrarCaja, createdCaja, deleteCaja, editCaja, getCajas, getCierraCaja, obtenerAperturaCaja } from '../../services/caja';
 import { useTitle } from '../../components/Title/Title';
 import { getUsuariosByEmpresa } from '../../services/usuarios';
+import { authProvider } from "../../auth";
 
 const initialValues = {
     id: 0,
@@ -19,8 +20,7 @@ const initialValues = {
     montocobro: "",
     montocredito: "",
     montocierre: "",
-    empresa_id: 1,
-    user_id: 1,
+    user_id: "",
     responsable: "",
     interessocio: "",
     interesnegocio: "",
@@ -39,6 +39,7 @@ function Cajas(){
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
     const [estadoCierre, setEstadoCierre] = React.useState(false);
     const [estadoApertura, setEstadoApertura] = React.useState(-1);
+    const navigate = useNavigate();
 
     const [fechaIni, setFechaIni] = React.useState({
         startDate: null,
@@ -76,6 +77,11 @@ function Cajas(){
 
     async function getLista(){
         const [resultados] = await Promise.all([getCajas(fechaIni.startDate, fechafin.startDate)]);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
         
         setCajas(resultados);
     }
@@ -96,6 +102,11 @@ function Cajas(){
 
         const [resultados] = await Promise.all([getCierraCaja(datos.id)]);
 
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
         setFormData({...formData, 
             id: datos.id,
             fechaapertura: formatoFecha(datos.fechaapertura),
@@ -103,7 +114,6 @@ function Cajas(){
             montoinicial: datos.montoinicial,
             fechacierre: fechaActual,
             horacierre: horaActual,
-            empresa_id: datos.empresa_id, 
             user_id: datos.user_id,
             responsable: user.nombres + " " + user.apellidos,
             montocobro: resultados.montocobro, 
@@ -123,6 +133,11 @@ function Cajas(){
     async function confirmCreatedCaja(){
         try{
             const response = await createdCaja(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             verificarAperturaExistente();
             setRegister(!register);
@@ -149,6 +164,11 @@ function Cajas(){
     async function confirmUpdateCaja(){
         try{
             const response = await editCaja(formData.id, formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -174,6 +194,11 @@ function Cajas(){
     async function confirmDeleteCaja(id){
         try{
             const response = await deleteCaja(id);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
         
             Swal.fire('Exito', 'El registro se eliminó correctamente');
             verificarAperturaExistente();
@@ -191,6 +216,11 @@ function Cajas(){
     async function confirmCierreCaja(){
         try{
             const response = await cerrarCaja(formData);
+
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
             
             setRegister(!register);
             setFormData(initialValues);
@@ -641,9 +671,12 @@ function Cajas(){
                                         </td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
                                             {
-                                                caja.estado!==2?(
-                                                    <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(caja.id)}><i className="fas fa-trash-alt"></i></Link>
-                                                ):("")
+                                                (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ?
+                                                (
+                                                    caja.estado!==2?(
+                                                        <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(caja.id)}><i className="fas fa-trash-alt"></i></Link>
+                                                    ):("")
+                                                ): ""
                                             }
                                         </td>
 

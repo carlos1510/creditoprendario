@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form, redirect, useActionData, useLocation, useNavigation } from "react-router-dom";
+import { Form, redirect, useActionData, useLocation } from "react-router-dom";
 import './styles.css';
 import { useTitle } from "../../components/Title/Title";
 import { authProvider } from "../../auth";
@@ -24,7 +24,6 @@ function Login(){
     useTitle('Login');
 
     const actionData = useActionData();
-    const navigation = useNavigation();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const redirectTo = searchParams.get("from");
