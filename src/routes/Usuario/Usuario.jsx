@@ -166,6 +166,7 @@ function Usuario(){
                 email: datos.email,
                 acceso: datos.acceso,
                 rol: datos.rol,
+                empresa_id: datos.empresa_id
             });
             if(datos.acceso === 1){
                 setIsChecked(true);
@@ -307,6 +308,7 @@ function Usuario(){
                         <div className='grid md:grid-cols-2 md:gap-6'>
                             <div className="relative z-0 w-full mb-5 group">
                                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Acceso</label> 
+                                <label className="ml-2 font-normal cursor-pointer select-none text-sm text-slate-700" htmlFor="accesoCbx">NO</label>
                                 <input type="checkbox" 
                                     id='accesoCbx' 
                                     className="appearance-none w-9 focus:outline-none checked:bg-blue-300 h-5 bg-gray-300 rounded-full before:inline-block before:rounded-full before:bg-blue-500 before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5" 
@@ -314,7 +316,7 @@ function Usuario(){
                                     checked={isChecked}
                                     onChange={checkHandler}
                                 />
-                                <label className="ml-2 font-normal cursor-pointer select-none text-sm text-slate-700" htmlFor="accesoCbx">NO</label>
+                                <label className="ml-2 font-normal cursor-pointer select-none text-sm text-slate-700" htmlFor="accesoCbx">SI</label>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
                                 <label htmlFor="rolCmb" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol <span className='text-red-600'>*</span></label> 
