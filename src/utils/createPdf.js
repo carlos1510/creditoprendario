@@ -26,7 +26,7 @@ const createPdf = async (props, output = 'print', target = '') => {
                     }
                 },
                 info = {
-                    title: 'F001-000001',
+                    title: 'Document',
                     author: 'maclode',
                     subject: 'ticket',
                     keywords: 'tck, sale', 

@@ -174,10 +174,8 @@ export async function getImprimirTicketCredito(id) {
 
     const response = await fetch(url, options);
 
-    if (response.ok) {
-        const body = await response.json();
-        return body.data;
-    }else{
-        return response.status;
-    }
+    const body = await response.json();
+
+    return body;
+        
 }

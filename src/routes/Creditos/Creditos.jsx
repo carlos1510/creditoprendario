@@ -1863,8 +1863,8 @@ function Creditos(){
                             {
                                 creditos?.map((credito) => (
                                     <tr className="hover:bg-grey-lighter" key={credito.id}>
-                                        <td className="py-2 px-4 border-b border-grey-light">{credito.nombre_comprobante}</td>
-                                        <td className="py-2 px-4 border-b border-grey-light">{credito.codigogenerado}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.codigocredito}</td>
+                                        <td className="py-2 px-4 border-b border-grey-light">{credito.codigocontrato}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.tiposervicio}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{formatoFecha(credito.fecha)}</td>
                                         <td className="py-2 px-4 border-b border-grey-light">{credito.numerodocumento}</td>
