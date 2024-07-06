@@ -137,3 +137,23 @@ export async function getNumeroPago() {
         return response.status;
     }
 }
+
+export async function getImprimirTicketPago(id) {
+    const token = window.localStorage.getItem(tokenKey); 
+
+    const url = `${URL_BASE}/imprimirTicketPagos/${id}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    const body = await response.json();
+
+    return body;
+        
+}

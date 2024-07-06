@@ -2,11 +2,12 @@ import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker"; 
 import Pagination from '../../components/Pagination/Pagination';
-import { getCobros } from '../../services/cobros';
+import { getCobros, getImprimirTicketPago } from '../../services/cobros';
 import { useTitle } from '../../components/Title/Title';
 import { getUsuariosByEmpresa } from '../../services/usuarios';
 import { formatoFecha } from '../../utils/util';
 import { authProvider } from '../../auth';
+import ticket from '../../utils/ticket';
 
 function Pagos(){
     useTitle('Pagos Diario');
@@ -71,6 +72,342 @@ function Pagos(){
         
         setCobros(resultados);
     }
+
+    async function obtenerDuplicadoTicket(id){
+        const [resultados] = await Promise.all([getImprimirTicketPago(id)]);
+
+        console.log(resultados);
+
+        if(resultados === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+        
+        onGenerateTicket('print', resultados);
+
+        onGenerateTicketSocio('print', resultados);
+    }
+
+    //INICIO PARA TICKET
+    const onGenerateTicket = async (output, data) => {
+
+        const content = [
+            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+            { text: '' + data.nombre_empresa, style: 'text' },
+            { text: '' + data.direccion_empresa, style: 'text' },
+            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+
+            //TIPO Y NUMERO DOCUMENTO
+            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 5, 0, 2.25] },
+            { text: '' + data.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+
+            //DATOS CEBECERA FACTURAR
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['25%', '35%', '15%', '25%'],
+                    body: [
+                        [
+                            { text: 'CAJERO:', style: 'tHeaderLabel' },
+                            { text: '' + data.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'FECHA:', style: 'tHeaderLabel' },
+                            { text: '' + formatoFecha(data.fecha), style: 'tHeaderValue' },
+                            { text: 'HORA:', style: 'tHeaderLabel' },
+                            { text: '' + data.hora, style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'OPERACION:', style: 'tHeaderLabel' },
+                            { text: '' + data.codigopago, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'CLIENTE:', style: 'tHeaderLabel' },
+                            { text: '' + data.nombrescliente, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'DNI:', style: 'tHeaderLabel' },
+                            { text: '' + data.nrodoc_cliente, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'N° CREDITO:', style: 'tHeaderLabel' },
+                            { text: '' + data.codigocredito, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            //TABLA SERVICIO
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['35%', '25%', '15%', '25%'],
+                    body: [
+                            [
+                                {
+                                    text: 'PRODUCTO: ',
+                                    style: 'tTotals',
+                                    alignment: 'left',
+                                    colSpan: 4,
+                                    margin: [5, 3, 0, 0],
+                                },
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
+                                {},
+                                {},
+                                {},
+                            ],
+                        ],
+                },
+                layout: 'noBorders',
+            },
+            //TOTALES
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                  widths: ['25%', '35%', '15%', '25%'],
+                  body: [
+                    
+                    [
+                        { text: 'PRESTAMO', style: 'tTotals', alignment: 'left',colSpan: 2, margin: [5, 0, 0, 0], },
+                        {},
+                        {text: 'S/:', alignment: 'left', style: 'tTotals'},
+                        { text: '' + (data.capital).toFixed(2), alignment: 'left',style: 'tTotals' },
+                    ],
+                    [
+                      { text: 'INTERÉS: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.interes_negocio).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'TOTAL PAGO: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + ((data.capital + data.interes_negocio)).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                        { text: 'DÍAS TRANS.: ', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                        {},
+                        { text: '' + data.nro_dias + ' días', style: 'tTotals', colSpan: 2 },
+                        {},
+                    ],
+                    //TOTAL IMPORTE EN LETRAS
+                  ],
+                },
+                layout: 'noBorders',
+            },
+            { text: '------------------------------------------------------------------------------------------------', style: 'text' },
+            // DATOS DE LA RENOVACION
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                  widths: ['25%', '35%', '15%', '25%'],
+                  body: [
+                    
+                    [
+                        { text: 'NUEVO SALDO CAP S/:', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                        {},
+                        { text: '' + (data.nuevocapital?data.nuevocapital:0).toFixed(2), style: 'tTotals', colSpan: 2  },
+                        {},
+                        
+                    ],
+                    [
+                      { text: 'FECHA PRÓX VCTO : ', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + data.fechavencimientonuevo!=='null'?formatoFecha(data.fechavencimientonuevo):'', style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'PLAZO: ', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + data.plazo, style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    
+                  ],
+                },
+                layout: 'noBorders',
+            },
+            
+            //NOTA DE PIE
+            {
+                text: 'ESTE DOCUMENTO NO ES UN TICKET BAJO REGLAMENTO DE COMPROBANTE DE PAGO.',
+                style: 'text',
+                alignment: 'justify',
+                margin: [5, 15, 10, 0],
+            },
+        ];
+
+        const response = await ticket(output, '', content);
+        
+        if (!response?.success) {
+            alert(response?.message);
+            return;
+        }
+    };
+
+    const onGenerateTicketSocio = async (output, data) => {
+
+        const content = [
+            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+            { text: '' + data.nombre_empresa, style: 'text' },
+            { text: '' + data.direccion_empresa, style: 'text' },
+            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+
+            //TIPO Y NUMERO DOCUMENTO
+            { text: '' + data.nom_tipo_comprobante, style: 'header', margin: [0, 5, 0, 2.25] },
+            { text: '' + data.codigogenerado, style: 'header', margin: [0, 2.25, 0, 0] },
+            { text: '----------------------------------------------------------------------------------------', style: 'text' },
+
+            //DATOS CEBECERA FACTURAR
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['25%', '35%', '15%', '25%'],
+                    body: [
+                        [
+                            { text: 'CAJERO:', style: 'tHeaderLabel' },
+                            { text: '' + data.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'FECHA:', style: 'tHeaderLabel' },
+                            { text: '' + formatoFecha(data.fecha), style: 'tHeaderValue' },
+                            { text: 'HORA:', style: 'tHeaderLabel' },
+                            { text: '' + data.hora, style: 'tHeaderValue' },
+                        ],
+                        [
+                            { text: 'OPERACION:', style: 'tHeaderLabel' },
+                            { text: '' + data.codigopago, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'CLIENTE:', style: 'tHeaderLabel' },
+                            { text: '' + data.nombrescliente, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        [
+                            { text: 'DNI:', style: 'tHeaderLabel' },
+                            { text: '' + data.nrodoc_cliente, style: 'tHeaderValue', colSpan: 3 },
+                            {},
+                            {},
+                        ],
+                        
+                        [
+                            { text: 'N° CONTRATO:', style: 'tTotals', alignment: 'left', colSpan: 2, margin: [10, 6, 0, 0] },
+                            {},
+                            { text: '' + data.codigocontrato, style: 'tHeaderValue', alignment: 'left', colSpan: 2, margin: [0, 6, 0, 0] },
+                            {},
+                        ],
+                    ],
+                },
+                layout: 'noBorders',
+            },
+            //TABLA SERVICIO
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                    widths: ['35%', '25%', '15%', '25%'],
+                    body: [
+                            [
+                                {
+                                    text: 'PRODUCTO: ',
+                                    style: 'tTotals',
+                                    alignment: 'left',
+                                    colSpan: 4,
+                                    margin: [5, 6, 0, 0],
+                                },
+                                {},
+                                {},
+                                {},
+                            ],
+                            [
+                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
+                                {},
+                                {},
+                                {},
+                            ],
+                            
+                        ],
+                },
+                layout: 'noBorders',
+            },
+            { text: '----------------------------------------------------------------------------------------------', style: 'text' },
+            {
+                margin: [0, 10, 0, 0],
+                table: {
+                  widths: ['25%', '35%', '15%', '25%'],
+                  body: [
+                    //TOTALES
+                    [
+                      { text: 'IMPORTE: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.interes_socio).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'IGV: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + (0).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                      { text: 'TOTAL PAGO: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                      {},
+                      { text: '' + (data.interes_socio).toFixed(2), style: 'tTotals', colSpan: 2 },
+                      {},
+                    ],
+                    [
+                        { text: 'DÍAS TRANS: S/', style: 'tTotals', colSpan: 2, margin: [5, 0, 0, 0], },
+                        {},
+                        { text: '' + data.nro_dias, style: 'tTotals', colSpan: 2 },
+                        {},
+                    ],
+                    
+                  ],
+                },
+                layout: 'noBorders',
+            },
+            { text: '----------------------------------------------------------------------------------------------', style: 'text' },
+            //NOTA DE PIE
+            {
+                text: 'ESTE DOCUMENTO NO ES UN TICKET BAJO REGLAMENTO DE COMPROBANTE DE PAGO.',
+                style: 'text',
+                alignment: 'justify',
+                margin: [5, 15, 10, 0],
+            },
+        ];
+
+        const response = await ticket(output, '_blank', content);
+        if (!response?.success) {
+            alert(response?.message);
+            return;
+        }
+    }
+    // fin para ticket
     
     const onChangePage = (value) => {
         setPerPage(value);
@@ -183,6 +520,7 @@ function Pagos(){
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Fecha Vcto</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Fecha Pago</th>
                                 <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-right">Monto</th>
+                                <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-right">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -197,6 +535,9 @@ function Pagos(){
                                         <td className="py-2 px-4 border-b border-grey-light text-center">{ formatoFecha(cobro.fecha) }</td>
                                         <td className="py-2 px-4 border-b border-grey-light text-right">
                                             <span className="text-lg">S/. { cobro.monto }</span>
+                                        </td>
+                                        <td className="py-2 px-4 border-b border-grey-light text-center">
+                                            <button type='button' className="bg-yellow-300 hover:bg-yellow-400 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> obtenerDuplicadoTicket(cobro.id)}><i className="fas fa-print"></i></button>
                                         </td>
                                     </tr>
                                 )).slice(firstIndex, lastIndex)
