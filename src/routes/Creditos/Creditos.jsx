@@ -956,7 +956,7 @@ function Creditos(){
                             { text: 'Agencia:', style: 'tHeaderLabel' },
                             { text: 'PUCALLPA', style: 'tHeaderValue' },
                             { text: 'Contrato: ', style: 'tHeaderLabel' },
-                            { text: 'Resolución SBS N° 03518-2022', style: 'tHeaderValue' },
+                            { text: 'Resolución SBS N° 00685-2023', style: 'tHeaderValue' },
                         ],
                         [
                             { text: 'Usuario:', style: 'tHeaderLabel' },
