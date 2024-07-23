@@ -5,7 +5,7 @@ import './style.css';
 import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util';
 import Swal from "sweetalert2";
-import { cerrarCaja, createdCaja, deleteCaja, editCaja, getCajas, getCierraCaja, obtenerAperturaCaja } from '../../services/caja';
+import { cerrarCaja, createdCaja, deleteCaja, editCaja, getCajas, getCierraCaja, getUltimoCierreMonto, obtenerAperturaCaja } from '../../services/caja';
 import { useTitle } from '../../components/Title/Title';
 import { getUsuariosByEmpresa } from '../../services/usuarios';
 import { authProvider } from "../../auth";
@@ -243,6 +243,18 @@ function Cajas(){
                 timer: 3000
             });
         }
+    }
+
+    async function obtenerUltimoCierreMonto(event){
+        const [resultado] = await Promise.all([getUltimoCierreMonto(event.target.value)]);
+        
+        if(resultado === 401){
+            authProvider.logoutStorage();
+            navigate("/login");
+        }
+
+        setFormData({...formData, montoinicial: resultado.montocierre, user_id: event.target.value});
+        //setUltimoCierreMonto(value);
     }
 
     function handleChange(event){
@@ -504,8 +516,8 @@ function Cajas(){
                                     <select id='cmbResponsable' 
                                         className="block  w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                         name='user_id'
-                                        value={formData.user_id}    
-                                        onChange={handleChange}
+                                        value={formData.user_id}  
+                                        onChange={ (event) => {handleChange(event); obtenerUltimoCierreMonto(event) }}  
                                         required
                                     >
                                         <option value="">---</option>

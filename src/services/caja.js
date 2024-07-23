@@ -1,5 +1,3 @@
-import { redirect } from "react-router-dom";
-import { authProvider } from "../auth";
 import { URL_BASE, tokenKey } from "../constants";
 
 export async function getCajas(fecha1, fecha2){
@@ -23,13 +21,6 @@ export async function getCajas(fecha1, fecha2){
         return response.status;
     }
 
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }*/
-
-    /*const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function createdCaja(formData){
@@ -52,14 +43,6 @@ export async function createdCaja(formData){
     }else{
         return response.status;
     }
-
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function editCaja(id, updateData){
@@ -83,14 +66,6 @@ export async function editCaja(id, updateData){
     }else{
         return response.status;
     }
-
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function deleteCaja(id){
@@ -114,13 +89,6 @@ export async function deleteCaja(id){
         return response.status;
     }
 
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function getCierraCaja(id){
@@ -144,13 +112,6 @@ export async function getCierraCaja(id){
         return response.status;
     }
 
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function cerrarCaja(formData){
@@ -174,13 +135,6 @@ export async function cerrarCaja(formData){
         return response.status;
     }
 
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
-    }
-
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }
 
 export async function obtenerAperturaCaja(){
@@ -203,11 +157,27 @@ export async function obtenerAperturaCaja(){
         return response.status;
     }
 
-    /*if (response.status === 401) {
-        authProvider.logout();
-        throw redirect("/login");
+}
+
+export async function getUltimoCierreMonto(iduser){
+    const token = window.localStorage.getItem(tokenKey);
+
+    const url = `${URL_BASE}/cajas/ultimocierre/monto/${iduser}`;
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${token}`,
+        },
+    };
+
+    const response = await fetch(url, options);
+
+    if(response.ok) {
+        const body = await response.json();
+        return body.data;
+    }else{
+        return response.status;
     }
 
-    const body = await response.json();
-    return Promise.reject(new Error(body.error));*/
 }

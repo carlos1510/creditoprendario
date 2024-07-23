@@ -16,7 +16,7 @@ const initialValues = {
     monto: "",
     descripcion: "",
     tipo_banco_id: "",
-    user_id: 1
+    user_id: ""
 };
 
 function PagoAlquiler(){
@@ -376,6 +376,9 @@ function PagoAlquiler(){
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">FECHA</th>
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">MONTO</th>
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">DESCRIPCION</th>
+                                    <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Estado</th>
+                                    <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Servicio</th>
+                                    <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Saldo</th>
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light">Confirmar</th>
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-right">Editar</th>
                                     <th className="py-2 px-4 bg-grey-lightest font-bold uppercase text-sm text-grey-light border-b border-grey-light text-center">Eliminar</th>
@@ -389,8 +392,15 @@ function PagoAlquiler(){
                                             <td className="py-2 px-4 border-b border-grey-light text-center">{formatoFecha(pago.fecha)}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">{pago.monto}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">{pago.descripcion}</td>
+                                            <td className="py-2 px-4 border-b border-grey-light text-center">{pago.estadopago===1? <label className='text-green-600'>Pagado</label>:<label className='text-orange-400'>Pendiente</label>}</td>
+                                            <td className="py-2 px-4 border-b border-grey-light text-center">{pago.estadoactivacion===1? <label className='text-green-600'>Activo</label>:<label className='text-orange-400'>Pendiente</label>}</td>
+                                            <td className="py-2 px-4 border-b border-grey-light text-center">{pago.saldo!==null? pago.saldo:0}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
-                                                <Link className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" ><i className="fas fa-check"></i></Link>
+                                                {
+                                                    authProvider.rol === 'Administrador' ? <Link className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" ><i className="fas fa-check"></i></Link> 
+                                                    : ""
+                                                }
+                                                
                                             </td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
                                                 <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, pago)}><i className="fas fa-edit"></i></Link>

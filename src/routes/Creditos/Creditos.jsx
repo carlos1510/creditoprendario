@@ -1567,13 +1567,14 @@ function Creditos(){
                             />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="direccionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Dirección del Cliente</label>
+                            <label htmlFor="direccionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Dirección del Cliente <span className='text-red-600'>*</span></label>
                             <input type="text" 
                                 id="direccionTxt" 
                                 className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 name='direccion'
                                 value={formData.direccion}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
@@ -1588,13 +1589,14 @@ function Creditos(){
                         </div>
                         <div className="grid md:grid-cols-2 md:gap-6">
                             <div className="relative z-0 w-full mb-5 group">
-                                <label htmlFor="telefono1Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Celular 1</label>
+                                <label htmlFor="telefono1Txt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Celular 1 <span className='text-red-600'>*</span></label>
                                 <input type="number" 
                                     id="telefono1Txt" 
                                     className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     name='telefono1'
                                     value={formData.telefono1}
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
