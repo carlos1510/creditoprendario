@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Outlet,
   redirect,
-  useActionData,
   useLoaderData,
  } from 'react-router-dom';
 import './App.css';
@@ -18,12 +17,13 @@ export async function loader({ request }){
 
   const username = authProvider.username;
   const rol = authProvider.rol;
+  const saldo = authProvider.saldo;
 
-  return {username, rol};
+  return {username, rol, saldo};
 }
 
 function App() {
-  const { username, rol } = useLoaderData();
+  const { username, rol, saldo } = useLoaderData();
 
   const [eventResult, setEventResult] = React.useState(null);
 
@@ -36,7 +36,7 @@ function App() {
     <>
       <div className="flex flex-col h-screen ">
 
-            <Header onClick={handleChildClick} username={username} rol={rol} />
+            <Header onClick={handleChildClick} username={username} rol={rol} saldo={saldo}/>
 
           <div className="flex-1 flex ">
 

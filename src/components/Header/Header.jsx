@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form, Link } from 'react-router-dom';
 
-function Header({onClick, username, rol}){
+function Header({onClick, username, rol, saldo}){
     const [hide, setHide] = React.useState(true);
     const [hideDrop, setHideDrop] = React.useState(false);
     const handleClick = () => {
@@ -25,17 +25,25 @@ function Header({onClick, username, rol}){
                 </div>
             </div>
 
-            <div className="space-x-8">           
+            <div className="space-x-8">     
+                
                 <button className='flex items-center' onClick={()=>{setHideDrop(!hideDrop)}}>
-                        <div className='flex-shrink-0 w-10 h-10 relative'>
-                            <div className='p-1 bg-white rounded-full focus:outline-none focus:ring'>
-                                <i className="fas fa-user text-gray-500 text-lg"></i>
-                            </div>
+                    {
+                        rol !== 'Administrador' ? 
+                            (<div className={`flex items-center justify-center h-10 w-10 rounded-full ${saldo<4?'bg-red-600':'bg-green-600'}`}>
+                                <span className='p-1 font-bold text-lg text-white'>{saldo}</span>
+                            </div>)
+                        :""
+                    }
+                    <div className='flex-shrink-0 w-10 h-10 relative'>
+                        <div className='p-1 bg-white rounded-full focus:outline-none focus:ring'>
+                            <i className="fas fa-user text-gray-500 text-lg"></i>
                         </div>
-                        <div className="p-2 md:block text-left">
-                            <h2 className="text-sm font-semibold text-gray-800">{username}</h2>
-                            <p className="text-xs text-gray-500">{rol}</p>
-                        </div> 
+                    </div>
+                    <div className="p-2 md:block text-left">
+                        <h2 className="text-sm font-semibold text-gray-800">{username}</h2>
+                        <p className="text-xs text-gray-500">{rol}</p>
+                    </div> 
                 </button>
                 <ul className={hideDrop?'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 bg-white ring-1 ring-black ring-opacity-5':'origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden'}>
                     <li>

@@ -1,5 +1,3 @@
-import { redirect } from "react-router-dom";
-import { authProvider } from "../auth";
 import { URL_BASE, tokenKey } from "../constants";
 
 export async function getPagoAlquileres(fecha1, fecha2){

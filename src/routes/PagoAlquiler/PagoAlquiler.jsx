@@ -7,6 +7,8 @@ import Pagination from '../../components/Pagination/Pagination';
 import { formatoFecha } from '../../utils/util'; 
 import { useTitle } from '../../components/Title/Title';
 import { authProvider } from '../../auth';
+import { TEModal, TEModalBody, TEModalContent, TEModalDialog, TEModalFooter, TEModalHeader, TERipple } from 'tw-elements-react';
+import { createdSaldoAlquiler } from '../../services/saldoAlquiler';
 
 
 const initialValues = {
@@ -19,17 +21,29 @@ const initialValues = {
     user_id: ""
 };
 
+const initialValuesSaldo = {
+    id: 0,
+    fecha_inicio: "",
+    fecha_final: "",
+    saldo: 0,
+    estadoactivacion: 2,
+    estadopago: 2,
+    pago_alquiler_id: "",
+}
+
 function PagoAlquiler(){
 
     useTitle('Pago Alquiler');
 
     const [pagoAlquileres, setPagoAlquileres] = React.useState([]);
     const [formData, setFormData] = React.useState(initialValues);
+    const [formDataSaldo, setFormDataSaldo] = React.useState(initialValuesSaldo);
     const totalPage = pagoAlquileres.length;
     const [perPage, setPerPage] = React.useState(10);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [register, setRegister] = React.useState(false);
     const [estadoRegistro, setEstadoRegistro] = React.useState(false); // para un nuevo registro y para editar
+    const [showModal, setShowModal] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -104,7 +118,7 @@ function PagoAlquiler(){
             Swal.fire({
                 icon: "error",
                 title: "Error!", 
-                text: "No se pudo completar con la actualización", 
+                text: "No se pudo completar con la acción", 
                 timer: 3000
             });
         }
@@ -161,10 +175,41 @@ function PagoAlquiler(){
         }
     }
 
+    async function confirmCreatedSaldoAlquiler(){
+        try{
+            const response = await createdSaldoAlquiler(formDataSaldo); 
+            if(response === 401){
+                authProvider.logoutStorage();
+                navigate("/login");
+            }
+
+            setShowModal(false);
+            Swal.fire({
+                icon: "success", 
+                title: "Exito!", 
+                html: `<p>Se <strong>Registro</strong> Correctamente los datos</p>`,
+                timer: 3000,
+                position: "center"
+            });
+            getLista();
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error!", 
+                text: "No se pudo completar la acción", 
+                timer: 3000
+            });
+        }                
+    }
+
     function handleChange(event){
         const { name, value } = event.target;
-        console.log(event.target)
         setFormData({ ...formData, [name]: value });
+    }
+
+    function handleChangeSaldo(event){
+        const { name, value } = event.target;
+        setFormDataSaldo({...formDataSaldo, [name]: value });
     }
 
     const handleFechaChange = (newValue) => {
@@ -224,6 +269,16 @@ function PagoAlquiler(){
         setPerPage(value);
         setCurrentPage(1);
     }
+
+    const handlePrepareSaldo = (dato) => {
+        setFormDataSaldo(initialValuesSaldo);
+        setFormDataSaldo({...initialValuesSaldo, pago_alquiler_id: dato.id});
+    }
+
+    const handleSubmitSaldo = (event) => {
+        event.preventDefault();
+        confirmCreatedSaldoAlquiler();
+    }
     
     const handleFechaIniChange = (newValue) => {
         setFechaIni(newValue); 
@@ -235,6 +290,118 @@ function PagoAlquiler(){
     
     return (
         <>
+            <TEModal show={showModal} setShow={setShowModal}>
+                <TEModalDialog size="lg">
+                <TEModalContent>
+                    <TEModalHeader>
+                        <h5 className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200">
+                            Confirmar Activación Saldo
+                        </h5>
+                        <button
+                            type="button"
+                            className="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                            onClick={() => setShowModal(false)}
+                            aria-label="Close"
+                        >
+                            <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="h-6 w-6"
+                            >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                            </svg>
+                        </button>
+                    </TEModalHeader>
+                    <TEModalBody>
+                        <form className='mx-auto' >
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="fechaInicioModalTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Fecha Inicio <span className='text-red-600'>*</span></label>
+                                    <input type="date" 
+                                        id="fechaInicioModalTxt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='fecha_inicio'
+                                        value={formDataSaldo.fecha_inicio}
+                                        onChange={handleChangeSaldo}
+                                        required
+                                        
+                                    />
+                                </div>
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="fecha_finalTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Fecha Final <span className='text-red-600'>*</span></label>
+                                    <input type="date" 
+                                        id="fecha_finalTxt" 
+                                        className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        name='fecha_final'
+                                        value={formDataSaldo.fecha_final}
+                                        onChange={handleChangeSaldo}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-2 md:gap-6">
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="estadoPagoCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Estado de Pago <span className='text-red-600'>*</span></label>
+                                    <select id="estadoPagoCmb" 
+                                        className="border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        name='estadopago'
+                                        value={formDataSaldo.estadopago}
+                                        onChange={handleChangeSaldo}
+                                        required
+                                    >
+                                        <option>---</option>
+                                        <option value="1">Pagado</option>
+                                        <option value="2">Pendiente</option>
+                                    </select>
+                                </div>
+                                <div className="relative z-0 w-full mb-5 group">
+                                    <label htmlFor="estadoActivacionCmb" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Estado de Activación <span className='text-red-600'>*</span></label>
+                                    <select id="estadoActivacionCmb" 
+                                        className="border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        name='estadoactivacion'
+                                        value={formDataSaldo.estadoactivacion}
+                                        onChange={handleChangeSaldo}
+                                        required
+                                    >
+                                        <option>---</option>
+                                        <option value="1">Activo</option>
+                                        <option value="2">Pendiente</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                        </form>
+                    </TEModalBody>
+                    <TEModalFooter>
+                        <TERipple rippleColor="light">
+                            <button
+                                type="button"
+                                className="inline-block rounded bg-red-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-red-600 focus:bg-red-600 focus:outline-none focus:ring-0 active:bg-red-500"
+                                onClick={() => setShowModal(false)}
+                                >
+                                Cancelar
+                            </button>
+                        </TERipple>
+                        <TERipple rippleColor="light">
+                            <button
+                                type="button"
+                                className="ml-1 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                    onClick={handleSubmitSaldo}
+                                >
+                                Agregar
+                            </button>
+                        </TERipple>
+                    </TEModalFooter>
+                </TEModalContent>
+                </TEModalDialog>
+            </TEModal>
             {register ? (
                 <div className="  bg-white p-4 rounded-md mt-4 shadow border border-gray-300  border-solid">
                     <h2 className="text-gray-500 text-center text-lg font-semibold pb-4">NUEVO PAGO</h2>
@@ -397,16 +564,23 @@ function PagoAlquiler(){
                                             <td className="py-2 px-4 border-b border-grey-light text-center">{pago.saldo!==null? pago.saldo:0}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
                                                 {
-                                                    authProvider.rol === 'Administrador' ? <Link className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" ><i className="fas fa-check"></i></Link> 
+                                                    authProvider.rol === 'Administrador' ? 
+                                                        pago.estadoactivacion===1?"":<Link className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" onClick={() => {handlePrepareSaldo(pago); setShowModal(true)}}><i className="fas fa-check"></i></Link> 
                                                     : ""
                                                 }
                                                 
                                             </td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
-                                                <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, pago)}><i className="fas fa-edit"></i></Link>
+                                                {
+                                                    pago.estadoactivacion === 1?"":<Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, pago)}><i className="fas fa-edit"></i></Link>
+                                                }
                                             </td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
-                                                <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(pago.id)}><i className="fas fa-trash-alt"></i></Link>
+                                                {
+                                                        pago.estadoactivacion === 1 ?  authProvider.rol === 'Administrador' ? <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(pago.id)}><i className="fas fa-trash-alt"></i></Link>:""
+                                                    : 
+                                                        <Link className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(pago.id)}><i className="fas fa-trash-alt"></i></Link>
+                                                }
                                             </td>
 
                                         </tr>)
