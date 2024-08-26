@@ -188,14 +188,20 @@ function Creditos(){
     }
 
     const searchTitleService = (event) => {
-        setShowTipoServicio(event.target.value);
         let idServicio = event.target.value;
+        
         if(idServicio !== ""){
-            const [servicio] = camposTipoServicio.filter(a =>
-                parseInt(a.servicio_id) === parseInt(idServicio)
-            )
-            setTitulosServicio(servicio);
+            if(idServicio !== "4"){
+                setShowTipoServicio(event.target.value);
+                const [servicio] = camposTipoServicio.filter(a =>
+                    parseInt(a.servicio_id) === parseInt(idServicio)
+                )
+                setTitulosServicio(servicio);
+            }else {
+                setShowTipoServicio("");
+            }
         }else{
+            setShowTipoServicio("");
             setTitulosServicio({});
         }
     }
@@ -379,46 +385,71 @@ function Creditos(){
         let j = 0;
         for(let i = 0; i < data.detalles.length; i++){
             if(i === 0){
-                
-                detalle[j] = [
-                    { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
-                    { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
-                    { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                if(Number(data.pago.servicio_id) !== 4){
+                    detalle[j] = [
+                        { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
+                        { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
+                        { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    ];
+                    detalle2[j] = [
+                        { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
+                        { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
+                        { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    ];
+                }else{
+                    detalle[j] = [
+                        { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    ];
+                    detalle2[j] = [
+                        { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                        { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                    ];
+                }
+            }
+
+            if(Number(data.pago.servicio_id) !== 4){
+                detalle[j+1]= [
+                    {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
                 ];
-                detalle2[j] = [
-                    { text: 'ITEM', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: 'DESCRIPCION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: '' + servicio.label1, style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: '' + servicio.label2, style: 'tHeaderLabelCenter' },
-                    { text: '' + servicio.label3, style: 'tHeaderLabelCenter' },
-                    { text: 'OBSERVACIONES', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
-                    { text: 'VALORIZACION', style: 'tHeaderLabelCenter', margin: [0,5,0,0] },
+                detalle2[j+1]= [
+                    {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
+                ];
+            }else{
+                detalle[j+1]= [
+                    {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
+                ];
+                detalle2[j+1]= [
+                    {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
+                    {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
                 ];
             }
-            detalle[j+1]= [
-                {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
-            ];
-            detalle2[j+1]= [
-                {text: '' + (i + 1), style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].descripcion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor1, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor2, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valor3, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].observaciones, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] },
-                {text: '' + data.detalles[i].valorizacion, style: 'tHeaderValueCenter', margin: [0, 5, 0, 0] }
-            ];
             j++;
-            
         }
 
         const content = [
@@ -555,7 +586,7 @@ function Creditos(){
             {
                 margin: [0, 10, 0, 0],
                 table: {
-                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    widths: Number(data.pago.servicio_id) !== 4?['5%', '15%', '10%', '15%', '15%', '25%', '15%']:['5%', '80%', '15%'],
                     body: detalle.map((item) => {return item}),
                 },
                 
@@ -936,7 +967,7 @@ function Creditos(){
                 margin: [0,5,0,0],
                 table: {
                     
-                    widths: ['5%', '15%', '10%', '15%', '15%', '25%', '15%'],
+                    widths: Number(data.pago.servicio_id)!==4?['5%', '15%', '10%', '15%', '15%', '25%', '15%']:['5%', '80%', '15%'],
                     body: detalle2.map((item) => {return item}),
                 },
                 
@@ -1296,6 +1327,18 @@ function Creditos(){
         setFechafin(newValue); 
     } 
 
+    const handleMontoText = (event, tipo) => {
+        let servicio_id = tipo===1?Number(event.target.value):formData.servicio_id;
+        if(servicio_id === 4){
+            if(formData.monto !== ""){
+                console.log(typeof formData.monto)
+                setFormData({...formData, servicio_id, total_texto: numeroALetras(formData.monto, 'SOLES')})
+            }else {
+                setFormData({...formData, servicio_id, total_texto: ""})
+            }
+        }
+    }
+
     return (
         <>
             {
@@ -1628,7 +1671,7 @@ function Creditos(){
                                     className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='servicio_id'
                                     value={formData.servicio_id}
-                                    onChange={(event) => {handleChange(event); searchTitleService(event); handlerCalcularFechaLimite(event, 2);}}
+                                    onChange={(event) => {handleChange(event); searchTitleService(event); handlerCalcularFechaLimite(event, 2); handleMontoText(event, 1)}}
                                     required 
                                 >
                                     <option value="">---</option>
@@ -1641,53 +1684,57 @@ function Creditos(){
                             </div>
                         </div>
 
-                        <div className="flex flex-col">
-                            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                                    <div className="overflow-hidden">
-                                        <table className="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                            <thead className="border-b font-medium dark:border-neutral-500">
-                                                <tr>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">ITEM</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">DESCRIPCION</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label1}</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label2}</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label3}</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">OBSERVACIONES</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">VALORIZACION</th>
-                                                    <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">
-                                                        {
-                                                            showTipoServicio!==""?(
-                                                                <button type='button' className="bg-cyan-600 hover:bg-cyan-800 text-white font-semibold py-1.5 px-4 rounded" title='Nuevo Item' onClick={() => setShowModal(true)}><i className="fas fa-plus-circle"></i></button>
-                                                            ):""
-                                                        }
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    detalleProducto?.map((detalle, index) => (
-                                                        <tr className="border-b dark:border-neutral-500" key={index}>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{index + 1}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.descripcion}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor1}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor2}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor3}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.observaciones}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valorizacion}</td>
-                                                            <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">
-                                                                <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDeleteProducto(detalle)}><i className="fas fa-trash-alt"></i></button>
-                                                            </td>
+                        {
+                            showTipoServicio !== ""?( 
+                                <div className="flex flex-col">
+                                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                                            <div className="overflow-hidden">
+                                                <table className="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                                    <thead className="border-b font-medium dark:border-neutral-500">
+                                                        <tr>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">ITEM</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">DESCRIPCION</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label1}</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label2}</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">{titulosServicio.label3}</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">OBSERVACIONES</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">VALORIZACION</th>
+                                                            <th scope="col" className="border-r px-6 py-4 dark:border-neutral-500">
+                                                                {
+                                                                    showTipoServicio!==""?(
+                                                                        <button type='button' className="bg-cyan-600 hover:bg-cyan-800 text-white font-semibold py-1.5 px-4 rounded" title='Nuevo Item' onClick={() => setShowModal(true)}><i className="fas fa-plus-circle"></i></button>
+                                                                    ):""
+                                                                }
+                                                            </th>
                                                         </tr>
-                                                    ))
-                                                }
-                                                
-                                            </tbody>
-                                        </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            detalleProducto?.map((detalle, index) => (
+                                                                <tr className="border-b dark:border-neutral-500" key={index}>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{index + 1}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.descripcion}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor1}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor2}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valor3}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.observaciones}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">{detalle.valorizacion}</td>
+                                                                    <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">
+                                                                        <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDeleteProducto(detalle)}><i className="fas fa-trash-alt"></i></button>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        }
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            ):""
+                        }
 
                         <div className="grid md:grid-cols-3 md:gap-6 pt-3">
                             <div className="relative z-0 w-full mb-5 group">
@@ -1711,7 +1758,8 @@ function Creditos(){
                                     className=" border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name='monto'
                                     value={formData.monto}
-                                    onChange={handleChange}
+                                    onChange={handleChange} 
+                                    onBlur={handleMontoText}
                                     required 
                                 />
                             </div>
