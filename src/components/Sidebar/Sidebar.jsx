@@ -3,10 +3,10 @@ import { Form, Link } from "react-router-dom";
 import { authProvider } from "../../auth";
 
 
-function Sidebar({hide}){
+function Sidebar(hide){
 
     const [showOpe, setShowOpe] = React.useState( false );
-    const [showReporte, setShowReporte] = React.useState(false);
+    // const [showReporte, setShowReporte] = React.useState(false);
     const [showConfig, setShowConfig] = React.useState(false);
     
     return (
@@ -18,6 +18,16 @@ function Sidebar({hide}){
                                 <i className="fas fa-home mr-2 text-center"></i> Inicio
                             </Link>
                         </li>
+                        {
+                            (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ? 
+                            (
+                                <li>
+                                    <Link to="/dashboard" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
+                                        <i className="fas fa-chart-pie mr-2"></i> Dashboard
+                                    </Link>
+                                </li>
+                            ):""
+                        }
                         <li>
                             <Link to="/cobro" className="block p-2 text-gray-50 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                             <i className="fas fa-money-bill-alt mr-2"></i> Cobrar

@@ -13,6 +13,7 @@ import Creditos from "./routes/Creditos/Creditos";
 import Cobros from "./routes/Cobros/Cobros";
 import Pagos from "./routes/Pagos/Pagos";
 import { action as logoutAction } from "./routes/Logout/logout";
+import Dashboard from "./routes/Dashboard/Dashboard";
 
 const baseruta = '/creditoprendario';
 
@@ -26,6 +27,11 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 element: <Home />
+            },
+            {
+                path: "dashboard",
+                element: <Dashboard />,
+                
             },
             {
                 path: "servicio",

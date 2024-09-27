@@ -227,9 +227,9 @@ function Creditos(){
         setMessage('');
 
         const content = [
-            { text: '' + data.pago.nombrenegocio?data.pago.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '' + data.pago.nombre_empresa?data.pago.nombre_empresa:'', style: 'headerMax', margin: [0, 10, 0, 0] },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
-            { text: '' + data.pago.nombre_empresa, style: 'text' },
+            { text: '' + data.pago.razonsocial, style: 'text' },
             { text: '' + data.pago.direccion_empresa, style: 'text' },
             { text: '' + data.pago.descripcion_tipo_doc_empresa + ': ' + data.pago.nrodoc_empresa, style: 'text' },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
@@ -574,7 +574,7 @@ function Creditos(){
                             { text: 'Forma de Pago', style: 'tHeaderLabel' },
                             { text: ':', style: 'tHeaderLabelCenter' },
                             { text: '' + data.pago.formapago, style: 'tHeaderValue' },
-                            {  text: 'En efectivo o mediante los canales de pago que Socio Efectivo autorice', style: 'tHeaderValue' },
+                            {  text: `En efectivo o mediante los canales de pago que ${data.pago.nombrenegocio?data.pago.nombrenegocio:''} autorice`, style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -594,7 +594,7 @@ function Creditos(){
             {text: 'III) PENALIDAD',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
             {text: 'Se cobrará una penalidad de 10 soles, solo en caso de que, el cliente solicite la entrega de el/los bien/es el mismo dia de la celebración del contrato y se cumpla con lo previsto en el mismo.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
             {text: 'IV) BENEFICIARIO DE LA GARANTIA MOBILIARIA',  style: 'tHeaderLabel', margin: [0, 15, 0, 0]},
-            {text: 'EMPRESA DE CREDITOS SOCIO EFECTIVO, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha ' + formatoFecha(data.pago.fecha) +'.',  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
+            {text: `EMPRESA DE CREDITOS ${data.pago.razonsocialsocio?data.pago.razonsocialsocio:''}, en virtud del CONTRATO DE PRÉSTAMO CONSUMO CON GARANTÍA MOBILIARIA N° ____________________________, de fecha ${formatoFecha(data.pago.fecha)} .`,  style: 'tHeaderValue', margin: [0, 5, 0, 0]},
             {
                 margin: [0, 50, 0, 0],
                 table: {
@@ -630,7 +630,7 @@ function Creditos(){
                             { text: ' ', style: 'tHeaderValue' },
                             { text: 'Nombre:', style: 'tHeaderValue' },
                             { text: '' + data.pago.nombrescliente, style: 'tHeaderValue' },
-                            { text: 'SOCIO EFECTIVO', style: 'tHeaderValue' },
+                            { text: data.pago.nombrenegocio?data.pago.nombrenegocio:'', style: 'tHeaderValue' },
                         ],
                     ],
                 },
@@ -666,9 +666,9 @@ function Creditos(){
                         ],
                         [
                             { text: '2', style: 'tTextXS' },
-                            { text: 'Los canales de pago podrán ser en bancos o empresas del sistema financiero, así como '+
-                                'el uso de medios electrónicos, autorizados por Socio Efectivo. Los costos asociados al uso '+
-                                'de dichos medios de pago serán de cargo al CLIENTE.'
+                            { text: `Los canales de pago podrán ser en bancos o empresas del sistema financiero, así como 
+                                el uso de medios electrónicos, autorizados por ${data.pago.nombrenegocio?data.pago.nombrenegocio:''}. Los costos asociados al uso 
+                                de dichos medios de pago serán de cargo al CLIENTE.`
                                 , style: 'text' 
                             },
                         ],

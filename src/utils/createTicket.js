@@ -21,6 +21,11 @@ const createPdf = async (props, output = 'print', target = '') => {
                     keywords: 'tck, sale', 
                 },
                 styles = {
+                    headerMax: {
+                        fontSize: 10,
+                        bold: true,
+                        alignment: 'center',
+                    },
                     header: {
                         fontSize: 8,
                         bold: true,
