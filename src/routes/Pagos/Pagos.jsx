@@ -92,9 +92,9 @@ function Pagos(){
     const onGenerateTicket = async (output, data) => {
 
         const content = [
-            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '' + data.nombre_empresa?data.nombre_empresa:'', style: 'headerMax', margin: [0, 10, 0, 0] },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
-            { text: '' + data.nombre_empresa, style: 'text' },
+            { text: '' + data.razonsocial, style: 'text' },
             { text: '' + data.direccion_empresa, style: 'text' },
             { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
@@ -267,11 +267,10 @@ function Pagos(){
     const onGenerateTicketSocio = async (output, data) => {
 
         const content = [
-            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'header', margin: [0, 10, 0, 0] },
+            { text: '' + data.nombrenegocio?data.nombrenegocio:'', style: 'headerMax', margin: [0, 10, 0, 0] },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
-            { text: '' + data.nombre_empresa, style: 'text' },
-            { text: '' + data.direccion_empresa, style: 'text' },
-            { text: '' + data.descripcion_tipo_doc_empresa + ': ' + data.nrodoc_empresa, style: 'text' },
+            { text: '' + data.razonsocialsocio, style: 'text' },
+            { text: 'RUC: ' + data.rucsocio, style: 'text' },
             { text: '----------------------------------------------------------------------------------------', style: 'text' },
 
             //TIPO Y NUMERO DOCUMENTO
