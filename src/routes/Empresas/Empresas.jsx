@@ -11,13 +11,16 @@ const initialValues = {
     tipodocumentoid: "",
     numerodocumento: "",
     nombrenegocio: "",
+    razonsocial: "",
     nombre: "",
     email: "",
     direccion: "",
     rutaimagen: "",
     gps: 0,
     tipomoneda: "PEN",
-    simbolomoneda: "S/."
+    simbolomoneda: "S/.",
+    rucsocio: "",
+    razonsocialsocio: ""
 };
 
 function Empresas(){
@@ -155,12 +158,15 @@ function Empresas(){
             setFormData({
                 id: datos.id,
                 tipodocumentoid: datos.tipodocumentoid,
+                razonsocial: datos.razonsocial?datos.razonsocial:'',
                 nombre: datos.nombre?datos.nombre:'',
                 numerodocumento: datos.numerodocumento,
                 email: datos.email?datos.email:'',
                 direccion: datos.direccion?datos.direccion:'',
                 telefono: datos.telefono?datos.telefono:'',
-                nombrenegocio: datos.nombrenegocio
+                nombrenegocio: datos.nombrenegocio,
+                rucsocio: datos.rucsocio?datos.rucsocio:'',
+                razonsocialsocio: datos.razonsocialsocio?datos.razonsocialsocio:''
             });
         }else{
             setFormData(initialValues);
@@ -237,7 +243,20 @@ function Empresas(){
                     </div>
                     <div className="grid grid-cols-1 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="nombreTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Razón Social <span className='text-red-600'>*</span></label> 
+                            <label htmlFor="razonsocialTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Razón Social <span className='text-red-600'>*</span></label> 
+                            <input type="text" 
+                                id="razonsocialTxt" 
+                                className="w-full px-3 py-2 uppercase dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                value={formData.razonsocial}
+                                onChange={handleChange} 
+                                name='razonsocial'
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:gap-6">
+                        <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="nombreTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nombre Comercial del Negocio <span className='text-red-600'>*</span></label> 
                             <input type="text" 
                                 id="nombreTxt" 
                                 className="w-full px-3 py-2 uppercase dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
@@ -248,19 +267,7 @@ function Empresas(){
                             />
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 md:gap-6">
-                        <div className="relative z-0 w-full mb-5 group">
-                            <label htmlFor="nombrenegocioTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nombre del Negocio <span className='text-red-600'>*</span></label> 
-                            <input type="text" 
-                                id="nombrenegocioTxt" 
-                                className="w-full px-3 py-2 text-lg uppercase dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
-                                value={formData.nombrenegocio}
-                                onChange={handleChange} 
-                                name='nombrenegocio'
-                                required
-                            />
-                        </div>
-                    </div>
+                    
                     <div className="grid grid-cols-1 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
                             <label htmlFor="direccionTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Dirección </label> 
@@ -292,6 +299,41 @@ function Empresas(){
                                 value={formData.email}
                                 onChange={handleChange} 
                                 name='email'
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:gap-6">
+                        <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="nombrenegocioTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Nombre Comercial del Socio <span className='text-red-600'>*</span></label> 
+                            <input type="text" 
+                                id="nombrenegocioTxt" 
+                                className="w-full px-3 py-2 text-lg uppercase dark:bg-gray-900 rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                value={formData.nombrenegocio}
+                                onChange={handleChange} 
+                                name='nombrenegocio'
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 md:gap-6">
+                        <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="rucsocioTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">RUC del Socio </label> 
+                            <input type="number" 
+                                id="rucsocioTxt" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                value={formData.rucsocio}
+                                onChange={handleChange} 
+                                name='rucsocio'
+                            />
+                        </div>
+                        <div className="relative z-0 w-full mb-5 group">
+                            <label htmlFor="razonsocialsocioTxt" className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Razon Social del Socio: </label> 
+                            <input type="text" 
+                                id="razonsocialsocioTxt" 
+                                className="w-full px-3 py-2 dark:bg-gray-900 text-lg rounded-sm border dark:border-none border-gray-300  border-solid" 
+                                value={formData.razonsocialsocio}
+                                onChange={handleChange} 
+                                name='razonsocialsocio'
                             />
                         </div>
                     </div>
