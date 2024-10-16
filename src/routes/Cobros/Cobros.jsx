@@ -875,7 +875,11 @@ function Cobros(){
                             <tbody>
                                 {
                                     cobros?.map((cobro) => (
-                                        <tr className="hover:bg-grey-lighter" key={cobro.id}>
+                                        <tr className={`${
+                                            cobro.intervalo >= -2 && cobro.intervalo <=3
+                                              ? 'bg-orange-300'
+                                              : (cobro.intervalo<=-3?'bg-red-500':'bg-green-400')
+                                          } hover:bg-grey-lighter`} key={cobro.id}>
                                             <td className="py-2 px-4 border-b border-grey-light">{cobro.codigocredito}</td>
                                             <td className="py-2 px-4 border-b border-grey-light">{cobro.numerodocumento}</td>
                                             <td className="py-2 px-4 border-b border-grey-light">{cobro.nombrescliente}</td>
