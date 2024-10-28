@@ -286,7 +286,7 @@ function Pagos(){
                     body: [
                         [
                             { text: 'CAJERO:', style: 'tHeaderLabel' },
-                            { text: '' + data.nombres_cajero, style: 'tHeaderValue', colSpan: 3 },
+                            { text: 'PERCY VILLENA', style: 'tHeaderValue', colSpan: 3 },
                             {},
                             {},
                         ],
@@ -344,7 +344,7 @@ function Pagos(){
                                 {},
                             ],
                             [
-                                { text: '' + data.tiposervicio, style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
+                                { text: 'SERVICIO DE CUSTODIA', style: 'tProductsBody', colSpan: 4, margin: [5, 0, 0, 0] },
                                 {},
                                 {},
                                 {},
