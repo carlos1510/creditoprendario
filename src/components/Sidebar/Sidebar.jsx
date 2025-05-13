@@ -61,13 +61,12 @@ function Sidebar(hide){
                                     <Link to="/pagos" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Pagos Diarios
                                     </Link>
-                                </li>
-                                {/* 
+                                </li> 
                                 <li>
                                     <Link to="/gasto" className="block p-2 text-gray-50 flex items-center rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-cyan-300 hover:text-white">
                                         <i className="fas fa-chevron-right mr-2 text-xs"></i> Gastos 
                                     </Link>
-                                </li> */}
+                                </li>
                             </ul>   
                         </li>
                         {

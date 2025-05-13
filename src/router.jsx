@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App, { loader as rootLoader } from "./routes/App";
 import Login, { action as loginAction } from "./routes/Login/Login";
 import Home from "./components/Home/Home";
-import Gasto from "./components/Gasto/Gasto";
 import PagoAlquiler from "./routes/PagoAlquiler/PagoAlquiler";
 import Servicio from "./components/Servicio/Servicio";
 import Usuario from "./routes/Usuario/Usuario";
@@ -14,6 +13,7 @@ import Cobros from "./routes/Cobros/Cobros";
 import Pagos from "./routes/Pagos/Pagos";
 import { action as logoutAction } from "./routes/Logout/logout";
 import Dashboard from "./routes/Dashboard/Dashboard";
+import Gasto from "./routes/Gasto/Gasto";
 
 const baseruta = '/creditoprendario';
 
