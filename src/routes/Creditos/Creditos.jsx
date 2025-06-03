@@ -191,7 +191,7 @@ function Creditos(){
         let idServicio = event.target.value;
         
         if(idServicio !== ""){
-            if(idServicio !== "4"){
+            if(Number(idServicio) < 4){
                 setShowTipoServicio(event.target.value);
                 const [servicio] = camposTipoServicio.filter(a =>
                     parseInt(a.servicio_id) === parseInt(idServicio)
