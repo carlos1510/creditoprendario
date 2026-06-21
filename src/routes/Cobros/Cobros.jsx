@@ -420,7 +420,8 @@ function Cobros(){
 
     async function verificarAperturaExistente(){
         const [resultados] = await Promise.all([obtenerAperturaCaja()]);
-        setEstadoApertura(resultados.apertura_activo);
+        // apertura_activo contiene el ID de la caja abierta (>0) o 0/null si no hay apertura
+        setEstadoApertura(resultados?.apertura_activo ?? 0);
     }
 
     async function confirmCreatedCobro(){
@@ -549,12 +550,12 @@ function Cobros(){
     return (
         <>
             {
-                estadoApertura !== 0?(
+                estadoApertura === 0?(
                     <div className=' space-y-6'>
                         <div className="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
                             <p className="font-bold">Información de Apertura de Caja</p>
                             <p className="text-sm">
-                                Debe Aperturar Caja para poder Realizar el Registro de Creditos
+                                Debe Aperturar Caja para poder Realizar el Registro de Cobros
                             </p>
                         </div>
                     </div>
@@ -889,7 +890,7 @@ function Cobros(){
                                             <td className="py-2 px-4 border-b border-grey-light text-right">S/. {(cobro.monto + cobro.interes_socio + cobro.interes_negocio).toFixed(2)}</td>
                                             <td className="py-2 px-4 border-b border-grey-light text-center">
                                                 {
-                                                    estadoApertura === 0 ? (
+                                                    estadoApertura > 0 ? (
                                                         <Link className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(cobro)}><i className="fas fa-money-bill-alt"></i></Link>
                                                     ) : ""
                                                 }

@@ -1139,7 +1139,8 @@ function Creditos(){
     async function verificarAperturaExistente(){
         const [resultados] = await Promise.all([obtenerAperturaCaja()]);
         
-        setEstadoApertura(resultados.apertura_activo);
+        // apertura_activo contiene el ID de la caja abierta (>0) o 0/null si no hay apertura
+        setEstadoApertura(resultados?.apertura_activo ?? 0);
     }
 
     async function obtenerNroComprobante(event){
@@ -1342,7 +1343,7 @@ function Creditos(){
     return (
         <>
             {
-                estadoApertura !== 0?(
+                estadoApertura === 0?(
                     <div className=' space-y-6'>
                         <div className="bg-red-100 border-t border-b border-red-500 text-red-700 px-4 py-3" role="alert">
                             <p className="font-bold">Información de Apertura de Caja</p>
@@ -1803,7 +1804,7 @@ function Creditos(){
             ) : (
                 <div className='grid grid-cols-1'>
                     {
-                        estadoApertura===0?(
+                        estadoApertura > 0?(
                             <div className="text-right ">
                                 <button className="bg-cyan-500 hover:bg-cyan-600 w-full sm:w-auto text-white font-semibold py-2 px-4 rounded" onClick={()=> handleNewEdit(false, null)}>
                                     <i className="fas fa-plus-circle"></i> NUEVO CREDITO
@@ -1926,7 +1927,7 @@ function Creditos(){
                                         </td>
                                         <td className="py-2 px-4 border-b border-grey-light text-center">
                                             {
-                                                estadoApertura===0?(
+                                                estadoApertura > 0?(
                                                     <button type='button' className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 mr-1 rounded" onClick={()=> handleNewEdit(true, credito)}><i className="fas fa-edit"></i></button>
                                                 ):""
                                             }
@@ -1936,7 +1937,7 @@ function Creditos(){
                                             {
                                                 (authProvider.rol === 'Administrador' || authProvider.rol === 'SubAdministrador') ?
                                                 (
-                                                    estadoApertura===0?(
+                                                    estadoApertura > 0?(
                                                         <button type='button' className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded" onClick={() => handleDelete(credito.id)}><i className="fas fa-trash-alt"></i></button>
                                                     ):""
                                                 ):""

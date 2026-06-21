@@ -69,15 +69,20 @@ function Usuario(){
             navigate("/login");
         }
 
-        if(resultados.nombres === ''){
+        if(!resultados || resultados === 401 || resultados.nombres === '') {
             Swal.fire({
                 icon: "warning",
                 title: "Advertencia!", 
                 text: "Usuario no Encontrado, por favor ingrese manualmente el nombre", 
                 timer: 5000
             });
-        }else{
-            setFormData({...formData, id: resultados.id?resultados.id:"", nombres: resultados.nombres, apellidos: resultados.apellidos});
+        } else {
+            setFormData({
+                ...formData,
+                id: resultados.id ?? "",
+                nombres: resultados.nombres?? "",
+                apellidos: resultados.apellidos ?? "",
+            });
         }
     }
 
@@ -157,16 +162,17 @@ function Usuario(){
         setRegister(!register);
         if(datos){
             setFormData({
-                id: datos.id,
-                tipodocumentoid: datos.tipodocumentoid,
-                numerodocumento: datos.numerodocumento,
-                nombres: datos.nombres,
-                apellidos: datos.apellidos,
-                username: datos.username,
-                email: datos.email,
-                acceso: datos.acceso,
-                rol: datos.rol,
-                empresa_id: datos.empresa_id
+                id: datos.id ?? 0,
+                tipodocumentoid: datos.tipodocumentoid ?? "",
+                numerodocumento: datos.numerodocumento ?? "",
+                nombres: datos.nombres ?? "",
+                apellidos: datos.apellidos ?? "",
+                username: datos.username ?? "",
+                email: datos.email ?? "",
+                password: "",
+                acceso: datos.acceso ?? 0,
+                rol: datos.rol ?? "",
+                empresa_id: datos.empresa_id ?? ""
             });
             if(datos.acceso === 1){
                 setIsChecked(true);
