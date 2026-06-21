@@ -20,12 +20,16 @@ const baseruta = '/creditoprendario';
 export const router = createBrowserRouter([
     {
         id: "app",
-        path: "/home?",
+        path: "/",
         element: <App />,
         loader: rootLoader,
         children: [
             {
                 index: true,
+                element: <Home />
+            },
+            {
+                path: "home",
                 element: <Home />
             },
             {

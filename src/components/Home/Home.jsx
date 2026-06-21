@@ -19,7 +19,7 @@ function Home(){
                                 className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                             <div className="relative mb-4 rounded-2xl">
                                 <img className="max-h-80 rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
-                                    src="./img/servicios.png" alt="" />
+                                    src="/creditoprendario/img/servicios.png" alt="" />
                                 
                                 <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
                                     to="/servicio">
@@ -47,7 +47,7 @@ function Home(){
                             className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                         <div className="relative mb-4 rounded-2xl">
                             <img className="max-h-80 rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
-                                src="./img/credito.png" alt="" />
+                            src="/creditoprendario/img/credito.png" alt="" />
                             
 
                             <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
@@ -75,7 +75,7 @@ function Home(){
                             className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                         <div className="relative mb-4 rounded-2xl ">
                             <img className="max-h-80  rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
-                                src="./img/pago.png" alt="" />
+                            src="/creditoprendario/img/pago.png" alt="" />
                             
                             <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
                                 to="/cobro">
@@ -104,7 +104,7 @@ function Home(){
                                     className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                                 <div className="relative mb-4 rounded-2xl ">
                                     <img className="max-h-80  rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
-                                        src="./img/caja.png" alt="" />
+                                    src="/creditoprendario/img/caja.png" alt="" />
                                     
                                     <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
                                         to="/caja">
@@ -135,7 +135,7 @@ function Home(){
                                     className="absolute opacity-0 top-0 right-0 left-0 bottom-0" />
                                 <div className="relative mb-4 rounded-2xl ">
                                     <img className="max-h-80  rounded-2xl pl-14 object-cover transition-transform duration-300 transform group-hover:scale-105" style={{ height: '235px'}}
-                                        src="./img/usuarios.png" alt="" />
+                                    src="/creditoprendario/img/usuarios.png" alt="" />
                                     
                                     <Link className="flex justify-center items-center bg-cyan-700 bg-opacity-80 absolute top-0 left-0 w-full h-full text-white rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100"
                                         to="/usuario">
